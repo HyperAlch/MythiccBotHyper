@@ -15,17 +15,30 @@ var (
 	GuildID        string
 	Bot            *discordgo.Session
 	RemoveCommands bool
+	DropTables     bool
+	MasterAdmin    string
 )
 
 func init() {
-	envVars, err := loadFromEnv("DISCORD_TOKEN", "GUILD_ID", "REMOVE_COMMANDS")
+	envVars, err := loadFromEnv("DISCORD_TOKEN",
+		"GUILD_ID",
+		"REMOVE_COMMANDS",
+		"DROP_TABLES",
+		"MASTER_ADMIN",
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	Token = envVars["DISCORD_TOKEN"]
 	GuildID = envVars["GUILD_ID"]
+	MasterAdmin = envVars["MASTER_ADMIN"]
 	RemoveCommands, err = strconv.ParseBool(envVars["REMOVE_COMMANDS"])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	DropTables, err = strconv.ParseBool(envVars["DROP_TABLES"])
 	if err != nil {
 		log.Fatal(err)
 	}
