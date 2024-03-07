@@ -26,7 +26,7 @@ func main() {
 	// Open a websocket connection to Discord and begin listening.
 	err := g.Bot.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
+		panic(err)
 		return
 	}
 
@@ -39,8 +39,15 @@ func main() {
 	<-sc
 
 	slashcommands.UnregisterCommands()
+
 	// Cleanly close down the Discord session.
-	g.Bot.Close()
+	defer func(Bot *discordgo.Session) {
+		err := Bot.Close()
+		if err != nil {
+
+		}
+	}(g.Bot)
+
 }
 
 // This function will be called (due to AddHandler above) every time a new
@@ -48,7 +55,7 @@ func main() {
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Ignore all messages created by the bot itself
-	// This isn't required in this specific example but it's a good practice.
+	// This isn't required in this specific example, but it's a good practice.
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
