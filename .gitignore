@@ -1,3 +1,4 @@
 .env
 .idea
 examples
+/discord_bot.sqlite

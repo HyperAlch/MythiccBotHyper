@@ -1,9 +1,12 @@
 package main
 
 import (
+	"MythiccBotHyper/db"
 	g "MythiccBotHyper/globals"
 	"MythiccBotHyper/slashcommands"
+	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,6 +15,16 @@ import (
 )
 
 func main() {
+	defer func(DB *sql.DB) {
+		err := DB.Close()
+		log.Println("")
+		if err != nil {
+			log.Println(err)
+		} else {
+			log.Println("Database closed...")
+		}
+	}(db.DB)
+
 	// Register the messageCreate func as a callback for MessageCreate events.
 	g.Bot.AddHandler(messageCreate)
 
@@ -44,7 +57,9 @@ func main() {
 	defer func(Bot *discordgo.Session) {
 		err := Bot.Close()
 		if err != nil {
-
+			log.Println(err)
+		} else {
+			log.Println("Bot shutdown...")
 		}
 	}(g.Bot)
 
