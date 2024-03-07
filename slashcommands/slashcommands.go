@@ -9,31 +9,29 @@ import (
 var (
 	Commands = []*discordgo.ApplicationCommand{
 		{
-			Name:        "basic-command",
-			Description: "Basic command",
+			Name:        "ping",
+			Description: "Check if bot is alive",
 		},
 	}
 
 	CommandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		"basic-command": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			globals.Bot.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Content: "Hey there! Congratulations, you just executed your first slash command",
-				},
-			})
-		},
+		"ping": ping,
 	}
 )
 
 func RegisterCommands() {
 	log.Println("Registering commands...")
+
+	// Get all currently registered commands
 	currentCommands, err := globals.Bot.ApplicationCommands(globals.Bot.State.User.ID, globals.GuildID)
 	if err != nil {
 		log.Fatalf("Could not fetch registered commandsExample: %v", err)
 	}
 
+	// Loop through the commands we want to register
 	for _, cmd := range Commands {
+
+		// Skip commands that have already been registered
 		skipCommand := false
 		for _, currentCommand := range currentCommands {
 			if cmd.Name == currentCommand.Name {
@@ -41,18 +39,17 @@ func RegisterCommands() {
 				break
 			}
 		}
-
 		if skipCommand {
 			continue
 		}
 
+		// Register any new commands
 		_, err := globals.Bot.ApplicationCommandCreate(globals.Bot.State.User.ID, globals.GuildID, cmd)
 		if err != nil {
 			log.Panicf("Cannot create '%v' command: %v", cmd.Name, err)
 		}
 
 		log.Println(cmd.Name, "was registered")
-
 	}
 
 	globals.Bot.AddHandler(func(bot *discordgo.Session, interactionCreate *discordgo.InteractionCreate) {
@@ -65,16 +62,19 @@ func RegisterCommands() {
 func UnregisterCommands() {
 	if globals.RemoveCommands {
 		log.Println("Removing commands...")
+
+		// Get all registered commands
 		registeredCommands, err := globals.Bot.ApplicationCommands(globals.Bot.State.User.ID, globals.GuildID)
 		if err != nil {
 			log.Fatalf("Could not fetch registered commandsExample: %v", err)
 		}
 
-		for _, v := range registeredCommands {
-			log.Printf("Removing %v\n", v.Name)
-			err := globals.Bot.ApplicationCommandDelete(globals.Bot.State.User.ID, globals.GuildID, v.ID)
+		// Remove all the commands
+		for _, command := range registeredCommands {
+			log.Printf("Removing %v\n", command.Name)
+			err := globals.Bot.ApplicationCommandDelete(globals.Bot.State.User.ID, globals.GuildID, command.ID)
 			if err != nil {
-				log.Panicf("Cannot delete '%v' command: %v", v.Name, err)
+				log.Panicf("Cannot delete '%v' command: %v", command.Name, err)
 			}
 		}
 	}
