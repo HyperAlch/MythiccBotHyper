@@ -6,11 +6,12 @@ import (
 	"log"
 )
 
-func ping(_ *discordgo.Session, i *discordgo.InteractionCreate) {
-	err := globals.Bot.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+func ping(_ *discordgo.Session, interaction *discordgo.InteractionCreate) {
+	err := globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: "Bot is online...",
+			Flags:   discordgo.MessageFlagsEphemeral,
 		},
 	})
 
