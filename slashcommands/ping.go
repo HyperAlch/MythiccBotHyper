@@ -6,6 +6,13 @@ import (
 	"log"
 )
 
+var (
+	pingDetails = discordgo.ApplicationCommand{
+		Name:        "ping",
+		Description: "Check if bot is alive",
+	}
+)
+
 func ping(_ *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	err := globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,

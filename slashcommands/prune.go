@@ -8,6 +8,23 @@ import (
 	"log"
 )
 
+var (
+	pruneDetails = discordgo.ApplicationCommand{
+		Name:        "prune",
+		Description: "Delete `x` amount of messages",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionInteger,
+				Name:        "amount",
+				Description: "amount",
+				MinValue:    &pruneAmount,
+				MaxValue:    99,
+				Required:    true,
+			},
+		},
+	}
+)
+
 func prune(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	var contentMessage string
 	contentMessage = func() string {
