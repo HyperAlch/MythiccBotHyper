@@ -7,15 +7,31 @@ import (
 )
 
 var (
-	Commands = []*discordgo.ApplicationCommand{
+	pruneAmount = 1.0
+	Commands    = []*discordgo.ApplicationCommand{
 		{
 			Name:        "ping",
 			Description: "Check if bot is alive",
 		},
+		{
+			Name:        "prune",
+			Description: "Delete `x` amount of messages",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionInteger,
+					Name:        "amount",
+					Description: "amount",
+					MinValue:    &pruneAmount,
+					MaxValue:    99,
+					Required:    true,
+				},
+			},
+		},
 	}
 
 	CommandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		"ping": ping,
+		"ping":  ping,
+		"prune": prune,
 	}
 )
 
