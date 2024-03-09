@@ -38,3 +38,13 @@ func GetAllAdminIds() ([]string, error) {
 
 	return users, nil
 }
+
+func RemoveAdminById(id string) error {
+	query := "DELETE FROM admins WHERE snowflake = ?"
+	_, err := db.DB.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
