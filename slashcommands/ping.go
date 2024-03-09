@@ -9,7 +9,7 @@ import (
 var (
 	pingDetails = discordgo.ApplicationCommand{
 		Name:        "ping",
-		Description: "Check if bot is alive",
+		Description: "Check if bot is online",
 	}
 )
 

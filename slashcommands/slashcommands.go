@@ -9,7 +9,7 @@ import (
 var (
 	pruneAmount = 1.0
 	Commands    = []*discordgo.ApplicationCommand{
-		&pingDetails,
+		//&pingDetails,
 		&pruneDetails,
 		&adminsDetails,
 	}
