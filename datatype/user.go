@@ -2,6 +2,7 @@ package datatype
 
 import (
 	"MythiccBotHyper/db"
+	"MythiccBotHyper/globals"
 	"errors"
 	"github.com/bwmarrin/discordgo"
 )
@@ -46,4 +47,12 @@ func (user User) IsAdmin() bool {
 	}
 
 	return true
+}
+
+func (user User) IsMasterAdmin() bool {
+	if user.id == globals.MasterAdmin {
+		return true
+	} else {
+		return false
+	}
 }

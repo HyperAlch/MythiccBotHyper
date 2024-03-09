@@ -73,9 +73,8 @@ func admins(state *discordgo.Session, interaction *discordgo.InteractionCreate) 
 			contentMessage = "/admins add"
 			break
 		case "remove":
-			targetUserId := options[0].Options[0].UserValue(state).ID
-			contentMessage = adminsRemove(targetUserId)
-
+			targetUser := options[0].Options[0].UserValue(state)
+			contentMessage = adminsRemove(targetUser)
 			break
 		default:
 			contentMessage = "Invalid command"
@@ -110,8 +109,19 @@ func adminsList() string {
 	return strings.Join(allAdmins, "\n")
 }
 
-func adminsRemove(id string) string {
-	err := model.RemoveAdminById(id)
+func adminsRemove(user *discordgo.User) string {
+	id := user.ID
+	u, err := datatype.NewUser(user)
+	if err != nil {
+		log.Println(err)
+		return err.Error()
+	}
+
+	if u.IsMasterAdmin() {
+		return "Nice try retard"
+	}
+
+	err = model.RemoveAdminById(id)
 	if err != nil {
 		log.Println(err)
 		return err.Error()
