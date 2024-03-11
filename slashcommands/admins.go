@@ -104,7 +104,7 @@ func admins(state *discordgo.Session, interaction *discordgo.InteractionCreate) 
 }
 
 func adminsList() string {
-	allAdmins, err := model.GetAllAdminIds()
+	allAdmins, err := model.GetAllSnowflakeIds(model.AdminSnowflake{})
 	if err != nil {
 		log.Println(err)
 		return err.Error()
@@ -128,7 +128,7 @@ func adminsRemove(user *discordgo.User) string {
 		return "Nice try retard"
 	}
 
-	err = model.RemoveAdminById(id)
+	err = model.RemoveSnowflakeById(id, model.AdminSnowflake{})
 	if err != nil {
 		log.Println(err)
 		return err.Error()
@@ -139,7 +139,7 @@ func adminsRemove(user *discordgo.User) string {
 
 func adminsAdd(user *discordgo.User) string {
 	id := user.ID
-	err := model.AddAdminById(id)
+	err := model.AddSnowflakeById(id, model.AdminSnowflake{})
 	if err != nil {
 		log.Println(err)
 		return err.Error()

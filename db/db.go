@@ -18,6 +18,8 @@ func init() {
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
 
+	createDevTables()
+
 	if globals.DropTables {
 		dropTables()
 	}
@@ -32,4 +34,14 @@ func createTables() {
 func dropTables() {
 	dropAdminsTable()
 	dropGamesTable()
+}
+
+func createDevTables() {
+	createSnowflakeTable := `
+	CREATE TABLE IF NOT EXISTS snowflake_table (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		snowflake TEXT NOT NULL UNIQUE
+	)
+	`
+	_, _ = DB.Exec(createSnowflakeTable)
 }
