@@ -4,7 +4,6 @@ import (
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
 	"MythiccBotHyper/model"
-	"encoding/json"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
@@ -61,8 +60,6 @@ func admins(state *discordgo.Session, interaction *discordgo.InteractionCreate) 
 
 	if user.IsAdmin() {
 		options := interaction.ApplicationCommandData().Options
-		jsonStr, _ := json.Marshal(options)
-		log.Println(string(jsonStr))
 		selectedCommand := options[0].Name
 
 		switch selectedCommand {
@@ -70,7 +67,8 @@ func admins(state *discordgo.Session, interaction *discordgo.InteractionCreate) 
 			contentMessage = adminsList()
 			break
 		case "add":
-			contentMessage = "/admins add"
+			targetUser := options[0].Options[0].UserValue(state)
+			contentMessage = adminsAdd(targetUser)
 			break
 		case "remove":
 			targetUser := options[0].Options[0].UserValue(state)
@@ -128,4 +126,15 @@ func adminsRemove(user *discordgo.User) string {
 	}
 
 	return fmt.Sprintf("<@%v> was removed...", id)
+}
+
+func adminsAdd(user *discordgo.User) string {
+	id := user.ID
+	err := model.AddAdminById(id)
+	if err != nil {
+		log.Println(err)
+		return err.Error()
+	}
+
+	return fmt.Sprintf("<@%v> was added...", id)
 }

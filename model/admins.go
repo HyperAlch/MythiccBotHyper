@@ -42,9 +42,15 @@ func GetAllAdminIds() ([]string, error) {
 func RemoveAdminById(id string) error {
 	query := "DELETE FROM admins WHERE snowflake = ?"
 	_, err := db.DB.Exec(query, id)
-	if err != nil {
-		return err
-	}
+	return err
+}
 
-	return nil
+func AddAdminById(id string) error {
+	query := `
+	INSERT INTO admins (snowflake)
+	SELECT ?
+	WHERE NOT EXISTS(SELECT 1 from admins WHERE snowflake = ?)
+	`
+	_, err := db.DB.Exec(query, id, id)
+	return err
 }
