@@ -31,4 +31,5 @@ func createTables() {
 
 func dropTables() {
 	dropAdminsTable()
+	dropGamesTable()
 }
