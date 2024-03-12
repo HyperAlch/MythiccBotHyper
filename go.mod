@@ -3,7 +3,7 @@ module MythiccBotHyper
 go 1.22
 
 require (
-	github.com/bwmarrin/discordgo v0.27.1 // indirect
+	github.com/bwmarrin/discordgo v0.27.2-0.20240307155122-202785c50b9e // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
