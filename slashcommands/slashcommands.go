@@ -12,12 +12,14 @@ var (
 		//&pingDetails,
 		&pruneDetails,
 		&adminsDetails,
+		&gamesDetails,
 	}
 
 	CommandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"ping":   ping,
 		"prune":  prune,
 		"admins": admins,
+		"games":  games,
 	}
 )
 
