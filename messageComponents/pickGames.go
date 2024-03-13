@@ -10,8 +10,7 @@ import (
 	"slices"
 )
 
-func pickGamesAdd(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
-
+func pickGamesDropdown(session *discordgo.Session, interaction *discordgo.InteractionCreate, dropdown GamesDropdown) {
 	data, err := func() (*discordgo.InteractionResponseData, error) {
 		// Get all games roles from model
 		allGameRoles, err := model.GetAllSnowflakeIds(model.GameSnowflake{})
@@ -31,7 +30,7 @@ func pickGamesAdd(session *discordgo.Session, interaction *discordgo.Interaction
 
 		// Filter allGameRoles using userRoles
 		allGameRoles = utils.Filter(allGameRoles, func(item string) bool {
-			return !slices.Contains(userRoles, item)
+			return dropdown.Filter(item, userRoles)
 		})
 
 		// If there are any roles after filtering
@@ -63,12 +62,12 @@ func pickGamesAdd(session *discordgo.Session, interaction *discordgo.Interaction
 			}
 
 			data := &discordgo.InteractionResponseData{
-				Content: "Please select the games you're interested in",
+				Content: dropdown.GetContent(),
 				Components: []discordgo.MessageComponent{
 					discordgo.ActionsRow{
 						Components: []discordgo.MessageComponent{
 							discordgo.SelectMenu{
-								CustomID:    "pick-games-add-execute",
+								CustomID:    dropdown.GetCustomId(),
 								Placeholder: "No games selected",
 								MinValues:   &minValue,
 								MaxValues:   len(allGameRoles),
@@ -83,7 +82,7 @@ func pickGamesAdd(session *discordgo.Session, interaction *discordgo.Interaction
 			return data, nil
 		}
 
-		return nil, errors.New("you have already selected all available games")
+		return nil, errors.New(dropdown.GetDefaultMessage())
 	}()
 
 	if err != nil {
@@ -103,6 +102,10 @@ func pickGamesAdd(session *discordgo.Session, interaction *discordgo.Interaction
 
 }
 
-func pickGamesRemove(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
-	log.Println("pickGamesRemove executed")
+func pickGamesAdd(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+	pickGamesDropdown(session, interaction, AddDropdown{})
+}
+
+func pickGamesRemove(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+	pickGamesDropdown(session, interaction, RemoveDropdown{})
 }
