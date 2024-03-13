@@ -1,6 +1,7 @@
 package slashcommands
 
 import (
+	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
 	"github.com/bwmarrin/discordgo"
 	"log"
@@ -16,7 +17,7 @@ var (
 		&pickGamesMenuDetails,
 	}
 
-	CommandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
+	CommandHandlers = datatype.InteractionMap{
 		"ping":            ping,
 		"prune":           prune,
 		"admins":          admins,
@@ -58,13 +59,7 @@ func RegisterCommands() {
 		log.Println(cmd.Name, "was registered")
 	}
 
-	globals.Bot.AddHandler(func(bot *discordgo.Session, interactionCreate *discordgo.InteractionCreate) {
-		if handler, ok := CommandHandlers[interactionCreate.ApplicationCommandData().Name]; ok {
-			handler(bot, interactionCreate)
-		}
-	})
 }
-
 func UnregisterCommands() {
 	if globals.RemoveCommands {
 		log.Println("Removing commands...")

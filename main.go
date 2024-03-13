@@ -1,8 +1,10 @@
 package main
 
 import (
+	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/db"
 	g "MythiccBotHyper/globals"
+	"MythiccBotHyper/messageComponents"
 	"MythiccBotHyper/slashcommands"
 	"database/sql"
 	"fmt"
@@ -25,8 +27,8 @@ func main() {
 		}
 	}(db.DB)
 
-	// Register the messageCreate func as a callback for MessageCreate events.
 	g.Bot.AddHandler(messageCreate)
+	g.Bot.AddHandler(interactionCreate)
 
 	g.Bot.Identify.Intents = discordgo.IntentsGuilds |
 		discordgo.IntentsGuildMessages |
@@ -82,5 +84,31 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// If the message is "pong" reply with "Ping!"
 	if m.Content == "pong" {
 		s.ChannelMessageSend(m.ChannelID, "Ping!")
+	}
+}
+
+const messageComponent = 3 /* Button press, dropdown select, etc 	*/
+const slashCommand = 2     /* Registered bot slash commands 		*/
+
+func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.InteractionCreate) {
+	executeInteraction := func(key string, interactionMap datatype.InteractionMap) {
+		handler, ok := interactionMap[key]
+		if ok {
+			handler(session, interactionCreate)
+		}
+	}
+
+	if interactionCreate.Type == messageComponent {
+		executeInteraction(
+			interactionCreate.MessageComponentData().CustomID,
+			messageComponents.MessageComponentHandlers,
+		)
+	} else if interactionCreate.Type == slashCommand {
+		executeInteraction(
+			interactionCreate.ApplicationCommandData().Name,
+			slashcommands.CommandHandlers,
+		)
+	} else {
+		log.Println("unknown interaction type:", interactionCreate.Type.String())
 	}
 }
