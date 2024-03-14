@@ -91,6 +91,12 @@ const messageComponent = 3 /* Button press, dropdown select, etc 	*/
 const slashCommand = 2     /* Registered bot slash commands 		*/
 
 func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.InteractionCreate) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Bot Recovered:", r)
+		}
+	}()
+
 	executeInteraction := func(key string, interactionMap datatype.InteractionMap) {
 		handler, ok := interactionMap[key]
 		if ok {
