@@ -23,11 +23,12 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		} else {
-			log.Println("Database closed...")
+			log.Println("SQL Database closed...")
 		}
 	}(db.DB)
 
 	g.Bot.AddHandler(interactionCreate)
+	g.Bot.AddHandler(voiceStateUpdate)
 
 	g.Bot.Identify.Intents = discordgo.IntentsGuilds |
 		discordgo.IntentsGuildMessages |
@@ -96,4 +97,24 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 	} else {
 		log.Println("unknown interaction type:", interactionCreate.Type.String())
 	}
+}
+
+func voiceStateUpdate(_ *discordgo.Session, voiceState *discordgo.VoiceStateUpdate) {
+	beforeState := voiceState.BeforeUpdate
+	currentState := voiceState
+
+	if currentState == nil {
+		log.Println("currentState is nil")
+		return
+	}
+
+	if beforeState == nil {
+		log.Println("User joined channel:", currentState.ChannelID)
+	} else if beforeState.ChannelID != "" && currentState.ChannelID == "" {
+		log.Println("User left channel:", beforeState.ChannelID)
+	} else if beforeState.ChannelID != currentState.ChannelID {
+		log.Printf("\nUser moved from %v to %v", beforeState.ChannelID, currentState.ChannelID)
+	}
+
+	// TODO: Log the voice channel changes via embeds
 }
