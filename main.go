@@ -5,17 +5,15 @@ import (
 	"MythiccBotHyper/db"
 	g "MythiccBotHyper/globals"
 	"MythiccBotHyper/messageComponents"
+	"MythiccBotHyper/minorLogs"
 	"MythiccBotHyper/slashcommands"
-	"MythiccBotHyper/utils"
 	"database/sql"
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
-
-	"github.com/bwmarrin/discordgo"
 )
 
 func main() {
@@ -30,7 +28,7 @@ func main() {
 	}(db.DB)
 
 	g.Bot.AddHandler(interactionCreate)
-	g.Bot.AddHandler(voiceStateUpdate)
+	g.Bot.AddHandler(minorLogs.VoiceStateUpdate)
 
 	g.Bot.Identify.Intents = discordgo.IntentsGuilds |
 		discordgo.IntentsGuildMessages |
@@ -99,72 +97,4 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 	} else {
 		log.Println("unknown interaction type:", interactionCreate.Type.String())
 	}
-}
-
-func voiceStateUpdate(session *discordgo.Session, voiceState *discordgo.VoiceStateUpdate) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Bot Recovered:", r)
-		}
-	}()
-
-	beforeState := voiceState.BeforeUpdate
-	currentState := voiceState
-
-	if currentState == nil {
-		log.Println("currentState is nil")
-		return
-	}
-
-	timeStamp := time.Now().Format(time.RFC3339)
-	userIdText := fmt.Sprintf("User ID: %v", currentState.UserID)
-	url, _ := utils.GetAvatarUrl(currentState.Member.User)
-	embedTitle := ""
-	embedColor := 0x000000
-
-	if beforeState == nil {
-		log.Println("User joined channel:", currentState.ChannelID)
-		embedTitle = "Joined Voice Chat"
-		embedColor = 0x57F287
-	} else if beforeState.ChannelID != "" && currentState.ChannelID == "" {
-		log.Println("User left channel:", beforeState.ChannelID)
-	} else if beforeState.ChannelID != currentState.ChannelID {
-		log.Printf("\nUser moved from %v to %v", beforeState.ChannelID, currentState.ChannelID)
-	}
-
-	data := &discordgo.MessageEmbed{
-		Title:       embedTitle,
-		Color:       embedColor,
-		Description: "🔄 🔄 🔄",
-		//Fields: []*discordgo.MessageEmbedField{
-		//	{
-		//		Name:   displayTitle,
-		//		Value:  strings.Join(selectedRoles, " "),
-		//		Inline: true,
-		//	},
-		//	{
-		//		Name:   "Display Name",
-		//		Value:  displayName,
-		//		Inline: false,
-		//	},
-		//},
-		Author: &discordgo.MessageEmbedAuthor{
-			Name:    currentState.Member.User.Username,
-			IconURL: url,
-		},
-		Footer: &discordgo.MessageEmbedFooter{
-			Text: userIdText,
-		},
-		Timestamp: timeStamp,
-	}
-
-	_, err := session.ChannelMessageSendEmbed(
-		"1020541787451961375",
-		data,
-	)
-	if err != nil {
-		return
-	}
-
-	// TODO: Log the voice channel changes via embeds
 }

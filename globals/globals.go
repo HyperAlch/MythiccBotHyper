@@ -11,12 +11,13 @@ import (
 )
 
 var (
-	Token          string
-	GuildID        string
-	Bot            *discordgo.Session
-	RemoveCommands bool
-	DropTables     bool
-	MasterAdmin    string
+	Token              string
+	GuildID            string
+	Bot                *discordgo.Session
+	RemoveCommands     bool
+	DropTables         bool
+	MasterAdmin        string
+	MinorEventsChannel string
 )
 
 func init() {
@@ -25,6 +26,7 @@ func init() {
 		"REMOVE_COMMANDS",
 		"DROP_TABLES",
 		"MASTER_ADMIN",
+		"MINOR_EVENTS_CHANNEL",
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -33,6 +35,7 @@ func init() {
 	Token = envVars["DISCORD_TOKEN"]
 	GuildID = envVars["GUILD_ID"]
 	MasterAdmin = envVars["MASTER_ADMIN"]
+	MinorEventsChannel = envVars["MINOR_EVENTS_CHANNEL"]
 	RemoveCommands, err = strconv.ParseBool(envVars["REMOVE_COMMANDS"])
 	if err != nil {
 		log.Fatal(err)

@@ -9,3 +9,7 @@ func FromUserId(userId string) string {
 func FromRoleId(roleId string) string {
 	return fmt.Sprintf("<@&%v>", roleId)
 }
+
+func FromChannelId(channelId string) string {
+	return fmt.Sprintf("<#%v>", channelId)
+}
