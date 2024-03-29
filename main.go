@@ -100,6 +100,12 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 }
 
 func voiceStateUpdate(_ *discordgo.Session, voiceState *discordgo.VoiceStateUpdate) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Bot Recovered:", r)
+		}
+	}()
+
 	beforeState := voiceState.BeforeUpdate
 	currentState := voiceState
 
