@@ -6,12 +6,14 @@ import (
 	g "MythiccBotHyper/globals"
 	"MythiccBotHyper/messageComponents"
 	"MythiccBotHyper/slashcommands"
+	"MythiccBotHyper/utils"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -99,7 +101,7 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 	}
 }
 
-func voiceStateUpdate(_ *discordgo.Session, voiceState *discordgo.VoiceStateUpdate) {
+func voiceStateUpdate(session *discordgo.Session, voiceState *discordgo.VoiceStateUpdate) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Bot Recovered:", r)
@@ -114,12 +116,54 @@ func voiceStateUpdate(_ *discordgo.Session, voiceState *discordgo.VoiceStateUpda
 		return
 	}
 
+	timeStamp := time.Now().Format(time.RFC3339)
+	userIdText := fmt.Sprintf("User ID: %v", currentState.UserID)
+	url, _ := utils.GetAvatarUrl(currentState.Member.User)
+	embedTitle := ""
+	embedColor := 0x000000
+
 	if beforeState == nil {
 		log.Println("User joined channel:", currentState.ChannelID)
+		embedTitle = "Joined Voice Chat"
+		embedColor = 0x57F287
 	} else if beforeState.ChannelID != "" && currentState.ChannelID == "" {
 		log.Println("User left channel:", beforeState.ChannelID)
 	} else if beforeState.ChannelID != currentState.ChannelID {
 		log.Printf("\nUser moved from %v to %v", beforeState.ChannelID, currentState.ChannelID)
+	}
+
+	data := &discordgo.MessageEmbed{
+		Title:       embedTitle,
+		Color:       embedColor,
+		Description: "🔄 🔄 🔄",
+		//Fields: []*discordgo.MessageEmbedField{
+		//	{
+		//		Name:   displayTitle,
+		//		Value:  strings.Join(selectedRoles, " "),
+		//		Inline: true,
+		//	},
+		//	{
+		//		Name:   "Display Name",
+		//		Value:  displayName,
+		//		Inline: false,
+		//	},
+		//},
+		Author: &discordgo.MessageEmbedAuthor{
+			Name:    currentState.Member.User.Username,
+			IconURL: url,
+		},
+		Footer: &discordgo.MessageEmbedFooter{
+			Text: userIdText,
+		},
+		Timestamp: timeStamp,
+	}
+
+	_, err := session.ChannelMessageSendEmbed(
+		"1020541787451961375",
+		data,
+	)
+	if err != nil {
+		return
 	}
 
 	// TODO: Log the voice channel changes via embeds

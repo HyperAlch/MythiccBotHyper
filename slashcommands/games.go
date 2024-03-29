@@ -3,6 +3,7 @@ package slashcommands
 import (
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
+	"MythiccBotHyper/interactives"
 	"MythiccBotHyper/model"
 	"errors"
 	"fmt"
@@ -111,7 +112,7 @@ func gamesList() string {
 	}
 
 	for i, gamesId := range allGames {
-		allGames[i] = fmt.Sprintf("<@&%v>", gamesId)
+		allGames[i] = interactives.FromRoleId(gamesId)
 	}
 	if len(allGames) < 1 {
 		return "No games in database..."
@@ -128,7 +129,7 @@ func gamesRemove(user *discordgo.Role) string {
 		return err.Error()
 	}
 
-	return fmt.Sprintf("<@&%v> was removed...", id)
+	return fmt.Sprintf("%v was removed...", interactives.FromRoleId(id))
 }
 
 func gamesAdd(user *discordgo.Role) string {
@@ -139,7 +140,7 @@ func gamesAdd(user *discordgo.Role) string {
 		return err.Error()
 	}
 
-	return fmt.Sprintf("<@&%v> was added...", id)
+	return fmt.Sprintf("%v was added...", interactives.FromRoleId(id))
 }
 
 func getTargetRole(state *discordgo.Session, options []*discordgo.ApplicationCommandInteractionDataOption) (*discordgo.Role, error) {

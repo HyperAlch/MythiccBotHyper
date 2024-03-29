@@ -3,6 +3,7 @@ package slashcommands
 import (
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
+	"MythiccBotHyper/interactives"
 	"MythiccBotHyper/model"
 	"errors"
 	"fmt"
@@ -111,7 +112,7 @@ func adminsList() string {
 	}
 
 	for i, adminId := range allAdmins {
-		allAdmins[i] = fmt.Sprintf("<@%v>", adminId)
+		allAdmins[i] = fmt.Sprintf("%v", interactives.FromUserId(adminId))
 	}
 	return strings.Join(allAdmins, "\n")
 }
@@ -134,7 +135,7 @@ func adminsRemove(user *discordgo.User) string {
 		return err.Error()
 	}
 
-	return fmt.Sprintf("<@%v> was removed...", id)
+	return fmt.Sprintf("%v was removed...", interactives.FromUserId(id))
 }
 
 func adminsAdd(user *discordgo.User) string {
@@ -145,7 +146,7 @@ func adminsAdd(user *discordgo.User) string {
 		return err.Error()
 	}
 
-	return fmt.Sprintf("<@%v> was added...", id)
+	return fmt.Sprintf("%v was added...", interactives.FromUserId(id))
 }
 
 func getTargetUser(state *discordgo.Session, options []*discordgo.ApplicationCommandInteractionDataOption) (*discordgo.User, error) {

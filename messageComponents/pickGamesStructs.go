@@ -1,6 +1,7 @@
 package messageComponents
 
 import (
+	"MythiccBotHyper/interactives"
 	"MythiccBotHyper/utils"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
@@ -87,12 +88,12 @@ func (_ RemoveDropdownExecute) GetData(selectedRoles []string, user *discordgo.U
 
 func getEmbedData(displayTitle string, selectedRoles []string, user *discordgo.User) *discordgo.InteractionResponseData {
 	for index, role := range selectedRoles {
-		selectedRoles[index] = fmt.Sprintf("<@&%v>", role)
+		selectedRoles[index] = fmt.Sprintf("%v", interactives.FromRoleId(role))
 	}
 
 	timeStamp := time.Now().Format(time.RFC3339)
 	url, _ := utils.GetAvatarUrl(user)
-	displayName := fmt.Sprintf("<@%v>", user.ID)
+	displayName := fmt.Sprintf("%v", interactives.FromUserId(user.ID))
 	userIdText := fmt.Sprintf("User ID: %v", user.ID)
 
 	return &discordgo.InteractionResponseData{
