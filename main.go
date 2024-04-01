@@ -9,11 +9,12 @@ import (
 	"MythiccBotHyper/slashcommands"
 	"database/sql"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func main() {
@@ -42,13 +43,12 @@ func main() {
 	err := g.Bot.Open()
 	if err != nil {
 		panic(err)
-		return
 	}
 
 	slashcommands.RegisterCommands()
 
 	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	fmt.Println("Bot is now running.  Press CTRL-C to exit...")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
