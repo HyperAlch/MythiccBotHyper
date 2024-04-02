@@ -4,16 +4,15 @@ import (
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/db"
 	g "MythiccBotHyper/globals"
+	majorlogs "MythiccBotHyper/majorLogs"
 	"MythiccBotHyper/messageComponents"
 	"MythiccBotHyper/minorLogs"
 	"MythiccBotHyper/slashcommands"
-	"MythiccBotHyper/utils"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"slices"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
@@ -32,7 +31,7 @@ func main() {
 
 	g.Bot.AddHandler(interactionCreate)
 	g.Bot.AddHandler(minorLogs.VoiceStateUpdate)
-	g.Bot.AddHandler(guildMemberUpdate)
+	g.Bot.AddHandler(majorlogs.GuildMemberUpdate)
 
 	g.Bot.Identify.Intents = discordgo.IntentsGuilds |
 		discordgo.IntentsGuildMessages |
@@ -99,28 +98,5 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 		)
 	} else {
 		log.Println("unknown interaction type:", interactionCreate.Type.String())
-	}
-}
-
-// Triggered when a users Nickname or Roles change
-func guildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.GuildMemberUpdate) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Bot Recovered:", r)
-		}
-	}()
-
-	log.Println("")
-	removedRoles := utils.Filter(guildMemberUpdate.BeforeUpdate.Roles, func(role string) bool {
-		return !slices.Contains(guildMemberUpdate.Roles, role)
-	})
-	addedRoles := utils.Filter(guildMemberUpdate.Roles, func(role string) bool {
-		return !slices.Contains(guildMemberUpdate.BeforeUpdate.Roles, role)
-	})
-
-	if guildMemberUpdate.Nick != guildMemberUpdate.BeforeUpdate.Nick {
-		log.Println("Nickname has changed...")
-	} else if len(removedRoles) != 0 || len(addedRoles) != 0 {
-		log.Println("Roles have changed...")
 	}
 }

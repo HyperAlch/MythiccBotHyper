@@ -3,11 +3,12 @@ package globals
 import (
 	"errors"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -18,6 +19,7 @@ var (
 	DropTables         bool
 	MasterAdmin        string
 	MinorEventsChannel string
+	MajorEventsChannel string
 )
 
 func init() {
@@ -27,6 +29,7 @@ func init() {
 		"DROP_TABLES",
 		"MASTER_ADMIN",
 		"MINOR_EVENTS_CHANNEL",
+		"MAJOR_EVENTS_CHANNEL",
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -36,6 +39,7 @@ func init() {
 	GuildID = envVars["GUILD_ID"]
 	MasterAdmin = envVars["MASTER_ADMIN"]
 	MinorEventsChannel = envVars["MINOR_EVENTS_CHANNEL"]
+	MajorEventsChannel = envVars["MAJOR_EVENTS_CHANNEL"]
 	RemoveCommands, err = strconv.ParseBool(envVars["REMOVE_COMMANDS"])
 	if err != nil {
 		log.Fatal(err)
