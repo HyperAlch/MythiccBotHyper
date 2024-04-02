@@ -33,6 +33,8 @@ func RolesUpdated(newRoles []string, removedRoles []string, user discordgo.User)
 		fields = append(fields, &discordgo.MessageEmbedField{Name: "Removed Roles: ", Value: val, Inline: false})
 	}
 
+	fields = append(fields, &discordgo.MessageEmbedField{Name: "Username", Value: interactives.FromUserId(user.ID), Inline: false})
+
 	return discordgo.MessageEmbed{
 		Title:       "Roles Updated",
 		Color:       0xFEE75C,
