@@ -10,11 +10,11 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func RolesUpdated(newRoles []string, removedRoles []string, user discordgo.User) discordgo.MessageEmbed {
+func RolesUpdated(newRoles []string, removedRoles []string, user *discordgo.User) discordgo.MessageEmbed {
 	fields := []*discordgo.MessageEmbedField{}
 
 	timeStamp := time.Now().Format(time.RFC3339)
-	url, _ := utils.GetAvatarUrl(&user)
+	url, _ := utils.GetAvatarUrl(user)
 	userIdText := fmt.Sprintf("User ID: %v", user.ID)
 
 	if len(newRoles) != 0 {

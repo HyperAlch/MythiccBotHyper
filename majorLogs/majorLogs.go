@@ -3,7 +3,6 @@ package majorlogs
 import (
 	"MythiccBotHyper/utils"
 	"fmt"
-	"log"
 	"slices"
 
 	g "MythiccBotHyper/globals"
@@ -28,9 +27,9 @@ func GuildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.
 	})
 
 	if guildMemberUpdate.Nick != guildMemberUpdate.BeforeUpdate.Nick {
-		log.Println("Nickname has changed...")
+		data = NicknameUpdated(guildMemberUpdate.BeforeUpdate.Nick, guildMemberUpdate.Nick, guildMemberUpdate.User)
 	} else if len(removedRoles) != 0 || len(newRoles) != 0 {
-		data = RolesUpdated(newRoles, removedRoles, *guildMemberUpdate.User)
+		data = RolesUpdated(newRoles, removedRoles, guildMemberUpdate.User)
 	}
 
 	_, err := session.ChannelMessageSendEmbed(
