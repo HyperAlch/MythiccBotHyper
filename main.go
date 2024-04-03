@@ -30,8 +30,16 @@ func main() {
 	}(db.DB)
 
 	g.Bot.AddHandler(interactionCreate)
+
+	// Minor Events
 	g.Bot.AddHandler(minorLogs.VoiceStateUpdate)
+
+	// Major Events
 	g.Bot.AddHandler(majorlogs.GuildMemberUpdate)
+	g.Bot.AddHandler(majorlogs.GuildMemberAdd)
+	g.Bot.AddHandler(majorlogs.GuildMemberRemove)
+	g.Bot.AddHandler(majorlogs.GuildMemberBanned)
+	g.Bot.AddHandler(majorlogs.GuildMemberUnbanned)
 
 	g.Bot.Identify.Intents = discordgo.IntentsGuilds |
 		discordgo.IntentsGuildMessages |
