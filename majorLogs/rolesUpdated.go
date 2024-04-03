@@ -10,7 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func RolesUpdated(newRoles []string, removedRoles []string, user *discordgo.User) discordgo.MessageEmbed {
+func rolesUpdated(newRoles []string, removedRoles []string, user *discordgo.User) discordgo.MessageEmbed {
 	fields := []*discordgo.MessageEmbedField{}
 
 	timeStamp := time.Now().Format(time.RFC3339)

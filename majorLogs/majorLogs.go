@@ -27,9 +27,9 @@ func GuildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.
 	})
 
 	if guildMemberUpdate.Nick != guildMemberUpdate.BeforeUpdate.Nick {
-		data = NicknameUpdated(guildMemberUpdate.BeforeUpdate.Nick, guildMemberUpdate.Nick, guildMemberUpdate.User)
+		data = nicknameUpdated(guildMemberUpdate.BeforeUpdate.Nick, guildMemberUpdate.Nick, guildMemberUpdate.User)
 	} else if len(removedRoles) != 0 || len(newRoles) != 0 {
-		data = RolesUpdated(newRoles, removedRoles, guildMemberUpdate.User)
+		data = rolesUpdated(newRoles, removedRoles, guildMemberUpdate.User)
 	}
 
 	_, err := session.ChannelMessageSendEmbed(

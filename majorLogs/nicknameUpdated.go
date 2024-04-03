@@ -9,7 +9,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func NicknameUpdated(oldNickname string, newNickname string, user *discordgo.User) discordgo.MessageEmbed {
+func nicknameUpdated(oldNickname string, newNickname string, user *discordgo.User) discordgo.MessageEmbed {
 	if len(oldNickname) == 0 {
 		oldNickname = "*Default Nickname*"
 	}
