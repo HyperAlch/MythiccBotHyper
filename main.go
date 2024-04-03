@@ -29,6 +29,10 @@ func main() {
 		}
 	}(db.DB)
 
+	if g.Bot == nil {
+		panic("Pointer to Bot is nil")
+	}
+
 	g.Bot.AddHandler(interactionCreate)
 
 	// Minor Events

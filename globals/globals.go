@@ -53,7 +53,7 @@ func init() {
 	// Create a new Discord session using the provided Bot token.
 	Bot, err = discordgo.New("Bot " + Token)
 	if err != nil {
-		fmt.Println("error creating Discord session,", err)
+		log.Fatalln("error creating Discord session,", err)
 		return
 	}
 }
@@ -68,7 +68,7 @@ func loadFromEnv(keys ...string) (map[string]string, error) {
 	for _, key := range keys {
 		token := os.Getenv(key)
 		if token == "" {
-			return nil, errors.New(fmt.Sprintf("%v not found", key))
+			return nil, fmt.Errorf("%v not found", key)
 		}
 		tokens[key] = token
 	}
