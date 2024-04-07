@@ -2,8 +2,9 @@ package slashcommands
 
 import (
 	"MythiccBotHyper/globals"
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (

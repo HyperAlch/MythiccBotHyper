@@ -4,8 +4,9 @@ import (
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (
@@ -26,8 +27,7 @@ var (
 )
 
 func prune(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
-	var contentMessage string
-	contentMessage = func() string {
+	contentMessage := func() string {
 		// Pull user from interaction
 		user, err := datatype.NewUserFromInteraction(interaction.Interaction)
 		if err != nil {
