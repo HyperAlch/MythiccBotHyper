@@ -18,6 +18,7 @@ func GuildMemberAdd(session *discordgo.Session, guildMemberAddData *discordgo.Gu
 		}
 	}()
 	user := guildMemberAddData.User
+	session.GuildMemberRoleAdd(g.GuildID, user.ID, g.FollowerRole)
 
 	joinDate, err := discordgo.SnowflakeTimestamp(user.ID)
 	if err != nil {

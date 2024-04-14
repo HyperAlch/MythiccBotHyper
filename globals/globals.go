@@ -20,6 +20,7 @@ var (
 	MasterAdmin        string
 	MinorEventsChannel string
 	MajorEventsChannel string
+	FollowerRole       string
 )
 
 func init() {
@@ -30,6 +31,7 @@ func init() {
 		"MASTER_ADMIN",
 		"MINOR_EVENTS_CHANNEL",
 		"MAJOR_EVENTS_CHANNEL",
+		"FOLLOWER_ROLE",
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -40,6 +42,7 @@ func init() {
 	MasterAdmin = envVars["MASTER_ADMIN"]
 	MinorEventsChannel = envVars["MINOR_EVENTS_CHANNEL"]
 	MajorEventsChannel = envVars["MAJOR_EVENTS_CHANNEL"]
+	FollowerRole = envVars["FOLLOWER_ROLE"]
 	RemoveCommands, err = strconv.ParseBool(envVars["REMOVE_COMMANDS"])
 	if err != nil {
 		log.Fatal(err)
