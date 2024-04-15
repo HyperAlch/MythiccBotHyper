@@ -1,15 +1,15 @@
 package slashcommands
 
 import (
-	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
 	"MythiccBotHyper/interactives"
 	"MythiccBotHyper/model"
 	"errors"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
 	"strings"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (
@@ -54,44 +54,32 @@ var (
 
 func games(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	contentMessage := ""
-	user, err := datatype.NewUserFromInteraction(interaction.Interaction)
-	if err != nil {
-		log.Println(err)
-		contentMessage = err.Error()
-	}
 
-	if user.IsAdmin() {
-		options := interaction.ApplicationCommandData().Options
-		selectedCommand := options[0].Name
+	options := interaction.ApplicationCommandData().Options
+	selectedCommand := options[0].Name
 
-		switch selectedCommand {
-		case "list":
-			contentMessage = gamesList()
+	switch selectedCommand {
+	case "list":
+		contentMessage = gamesList()
+	case "add":
+		targetUser, err := getTargetRole(state, options)
+		if err != nil {
+			contentMessage = err.Error()
 			break
-		case "add":
-			targetUser, err := getTargetRole(state, options)
-			if err != nil {
-				contentMessage = err.Error()
-				break
-			}
-			contentMessage = gamesAdd(targetUser)
-			break
-		case "remove":
-			targetUser, err := getTargetRole(state, options)
-			if err != nil {
-				contentMessage = err.Error()
-				break
-			}
-			contentMessage = gamesRemove(targetUser)
-			break
-		default:
-			contentMessage = "Invalid command"
 		}
-	} else {
-		contentMessage = "You are not allowed to do this!"
+		contentMessage = gamesAdd(targetUser)
+	case "remove":
+		targetUser, err := getTargetRole(state, options)
+		if err != nil {
+			contentMessage = err.Error()
+			break
+		}
+		contentMessage = gamesRemove(targetUser)
+	default:
+		contentMessage = "Invalid command"
 	}
 
-	err = globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
+	err := globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: contentMessage,

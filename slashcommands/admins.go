@@ -7,9 +7,10 @@ import (
 	"MythiccBotHyper/model"
 	"errors"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
 	"strings"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (
@@ -55,40 +56,32 @@ var (
 func admins(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	contentMessage := ""
 	user, err := datatype.NewUserFromInteraction(interaction.Interaction)
-	if err != nil {
-		log.Println(err)
-		contentMessage = err.Error()
+	if err != nil || !user.IsMasterAdmin() {
+		return
 	}
 
-	if user.IsAdmin() {
-		options := interaction.ApplicationCommandData().Options
-		selectedCommand := options[0].Name
+	options := interaction.ApplicationCommandData().Options
+	selectedCommand := options[0].Name
 
-		switch selectedCommand {
-		case "list":
-			contentMessage = adminsList()
+	switch selectedCommand {
+	case "list":
+		contentMessage = adminsList()
+	case "add":
+		targetUser, err := getTargetUser(state, options)
+		if err != nil {
+			contentMessage = err.Error()
 			break
-		case "add":
-			targetUser, err := getTargetUser(state, options)
-			if err != nil {
-				contentMessage = err.Error()
-				break
-			}
-			contentMessage = adminsAdd(targetUser)
-			break
-		case "remove":
-			targetUser, err := getTargetUser(state, options)
-			if err != nil {
-				contentMessage = err.Error()
-				break
-			}
-			contentMessage = adminsRemove(targetUser)
-			break
-		default:
-			contentMessage = "Invalid command"
 		}
-	} else {
-		contentMessage = "You are not allowed to do this!"
+		contentMessage = adminsAdd(targetUser)
+	case "remove":
+		targetUser, err := getTargetUser(state, options)
+		if err != nil {
+			contentMessage = err.Error()
+			break
+		}
+		contentMessage = adminsRemove(targetUser)
+	default:
+		contentMessage = "Invalid command"
 	}
 
 	err = globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{

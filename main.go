@@ -104,6 +104,18 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 			messageComponents.MessageComponentHandlers,
 		)
 	} else if interactionCreate.Type == slashCommand {
+		interaction := interactionCreate.Interaction
+		user, err := datatype.NewUserFromInteraction(interaction)
+		if err != nil {
+			log.Println("Could not get custom `datatype.User` from interaction")
+			return
+		}
+
+		if !user.IsAdmin() {
+			log.Printf("Non-admin user %v tried to execute a slash command\n", user.Get())
+			return
+		}
+
 		executeInteraction(
 			interactionCreate.ApplicationCommandData().Name,
 			slashcommands.CommandHandlers,
