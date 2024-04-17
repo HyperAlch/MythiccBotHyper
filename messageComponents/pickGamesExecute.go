@@ -2,21 +2,54 @@ package messageComponents
 
 import (
 	"MythiccBotHyper/globals"
+	"MythiccBotHyper/interactives"
 	"errors"
-	"github.com/bwmarrin/discordgo"
+	"fmt"
 	"log"
+	"slices"
+	"strings"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func pickGamesAddExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
-	pickGamesExecute(session, interaction, AddDropdownExecute{})
+	selectedRoles, data := pickGamesExecute(session, interaction, AddDropdownExecute{})
+	guildApplyRoles := strings.Split(globals.GuildApplyRoles, ",")
+	for i, role := range guildApplyRoles {
+		guildApplyRoles[i] = interactives.FromRoleId(role)
+		if slices.Contains(selectedRoles, guildApplyRoles[i]) {
+			msg := fmt.Sprintf("# Guild Application Required!\n%v", interactives.FromChannelId(globals.NeedsToApplyChannel))
+			data.Embeds = append(data.Embeds, &discordgo.MessageEmbed{
+				Title:       "Guild Application Required!",
+				Color:       0xED4245,
+				Description: msg,
+			})
+		}
+	}
+
+	err := session.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: data,
+	})
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func pickGamesRemoveExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
-	pickGamesExecute(session, interaction, RemoveDropdownExecute{})
+	_, data := pickGamesExecute(session, interaction, RemoveDropdownExecute{})
+
+	err := session.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: data,
+	})
+	if err != nil {
+		log.Println(err)
+	}
 }
 
-func pickGamesExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate, dropdownExecute GamesDropdownExecute) {
-	selectedRoles := interaction.MessageComponentData().Values
+func pickGamesExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate, dropdownExecute GamesDropdownExecute) (selectedRoles []string, data *discordgo.InteractionResponseData) {
+	selectedRoles = interaction.MessageComponentData().Values
 	var user *discordgo.User
 
 	err := func() error {
@@ -42,7 +75,6 @@ func pickGamesExecute(session *discordgo.Session, interaction *discordgo.Interac
 		return nil
 	}()
 
-	var data *discordgo.InteractionResponseData
 	if err != nil {
 		// Something failed, show the error
 		data = &discordgo.InteractionResponseData{
@@ -54,11 +86,5 @@ func pickGamesExecute(session *discordgo.Session, interaction *discordgo.Interac
 		data = dropdownExecute.GetData(selectedRoles, user)
 	}
 
-	err = session.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: data,
-	})
-	if err != nil {
-		log.Println(err)
-	}
+	return
 }
