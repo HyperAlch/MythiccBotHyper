@@ -12,15 +12,18 @@ import (
 )
 
 var (
-	Token              string
-	GuildID            string
-	Bot                *discordgo.Session
-	RemoveCommands     bool
-	DropTables         bool
-	MasterAdmin        string
-	MinorEventsChannel string
-	MajorEventsChannel string
-	FollowerRole       string
+	Token               string
+	GuildID             string
+	Bot                 *discordgo.Session
+	RemoveCommands      bool
+	DropTables          bool
+	MasterAdmin         string
+	MinorEventsChannel  string
+	MajorEventsChannel  string
+	FollowerRole        string
+	GuildApplyRoles     string
+	NeedsToApplyRole    string
+	NeedsToApplyChannel string
 )
 
 func init() {
@@ -32,6 +35,9 @@ func init() {
 		"MINOR_EVENTS_CHANNEL",
 		"MAJOR_EVENTS_CHANNEL",
 		"FOLLOWER_ROLE",
+		"GUILD_APPLY_ROLES",
+		"NEEDS_TO_APPLY_ROLE",
+		"NEEDS_TO_APPLY_CHANNEL",
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -43,6 +49,9 @@ func init() {
 	MinorEventsChannel = envVars["MINOR_EVENTS_CHANNEL"]
 	MajorEventsChannel = envVars["MAJOR_EVENTS_CHANNEL"]
 	FollowerRole = envVars["FOLLOWER_ROLE"]
+	GuildApplyRoles = envVars["GUILD_APPLY_ROLES"]
+	NeedsToApplyRole = envVars["NEEDS_TO_APPLY_ROLE"]
+	NeedsToApplyChannel = envVars["NEEDS_TO_APPLY_CHANNEL"]
 	RemoveCommands, err = strconv.ParseBool(envVars["REMOVE_COMMANDS"])
 	if err != nil {
 		log.Fatal(err)

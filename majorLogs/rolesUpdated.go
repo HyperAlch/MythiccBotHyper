@@ -1,16 +1,19 @@
 package majorlogs
 
 import (
+	g "MythiccBotHyper/globals"
 	"MythiccBotHyper/interactives"
 	"MythiccBotHyper/utils"
 	"fmt"
+	"log"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-func rolesUpdated(newRoles []string, removedRoles []string, user *discordgo.User) discordgo.MessageEmbed {
+func rolesUpdated(newRoles []string, removedRoles []string, user *discordgo.User, session *discordgo.Session) discordgo.MessageEmbed {
 	fields := []*discordgo.MessageEmbedField{}
 
 	timeStamp := time.Now().Format(time.RFC3339)
@@ -18,6 +21,24 @@ func rolesUpdated(newRoles []string, removedRoles []string, user *discordgo.User
 	userIdText := fmt.Sprintf("User ID: %v", user.ID)
 
 	if len(newRoles) != 0 {
+		guildApplyRoles := strings.Split(g.GuildApplyRoles, ",")
+		setNeedsToApply := func() bool {
+			for _, applyRole := range guildApplyRoles {
+				if slices.Contains(newRoles, applyRole) {
+					return true
+				}
+			}
+			return false
+		}()
+
+		if setNeedsToApply {
+			session.GuildMemberRoleAdd(g.GuildID, user.ID, g.NeedsToApplyRole)
+		}
+
+		if slices.Contains(newRoles, g.NeedsToApplyRole) {
+			guildApplySendDirections(session, user)
+		}
+
 		for i, roleId := range newRoles {
 			newRoles[i] = fmt.Sprintf("%v", interactives.FromRoleId(roleId))
 		}
@@ -48,5 +69,23 @@ func rolesUpdated(newRoles []string, removedRoles []string, user *discordgo.User
 			Text: userIdText,
 		},
 		Timestamp: timeStamp,
+	}
+}
+
+func guildApplySendDirections(session *discordgo.Session, user *discordgo.User) {
+	channel, err := session.UserChannelCreate(user.ID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	msg := fmt.Sprintf("# Guild Application Required!\n%v",
+		interactives.FromChannelId(g.NeedsToApplyChannel),
+	)
+
+	_, err = session.ChannelMessageSend(channel.ID, msg)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 }
