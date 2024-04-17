@@ -4,10 +4,11 @@ import (
 	"MythiccBotHyper/interactives"
 	"MythiccBotHyper/utils"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 type GamesDropdown interface {
@@ -20,35 +21,35 @@ type GamesDropdown interface {
 type AddDropdown struct{}
 type RemoveDropdown struct{}
 
-func (_ AddDropdown) Filter(item string, userRoles []string) bool {
+func (AddDropdown) Filter(item string, userRoles []string) bool {
 	return !slices.Contains(userRoles, item)
 }
 
-func (_ AddDropdown) GetContent() string {
+func (AddDropdown) GetContent() string {
 	return "Please select the games you're interested in"
 }
 
-func (_ AddDropdown) GetCustomId() string {
+func (AddDropdown) GetCustomId() string {
 	return "pick-games-add-execute"
 }
 
-func (_ AddDropdown) GetDefaultMessage() string {
+func (AddDropdown) GetDefaultMessage() string {
 	return "You have already selected all available games"
 }
 
-func (_ RemoveDropdown) Filter(item string, userRoles []string) bool {
+func (RemoveDropdown) Filter(item string, userRoles []string) bool {
 	return slices.Contains(userRoles, item)
 }
 
-func (_ RemoveDropdown) GetContent() string {
+func (RemoveDropdown) GetContent() string {
 	return "Please select the games you would like to remove"
 }
 
-func (_ RemoveDropdown) GetCustomId() string {
+func (RemoveDropdown) GetCustomId() string {
 	return "pick-games-remove-execute"
 }
 
-func (_ RemoveDropdown) GetDefaultMessage() string {
+func (RemoveDropdown) GetDefaultMessage() string {
 	return "There are no games to remove"
 }
 
@@ -60,7 +61,7 @@ type GamesDropdownExecute interface {
 type AddDropdownExecute struct{}
 type RemoveDropdownExecute struct{}
 
-func (_ AddDropdownExecute) ChangeUser(guildID, userID, roleID string, session *discordgo.Session) (err error) {
+func (AddDropdownExecute) ChangeUser(guildID, userID, roleID string, session *discordgo.Session) (err error) {
 	err = session.GuildMemberRoleAdd(guildID, userID, roleID)
 	if err != nil {
 		return err
@@ -69,11 +70,11 @@ func (_ AddDropdownExecute) ChangeUser(guildID, userID, roleID string, session *
 	return nil
 }
 
-func (_ AddDropdownExecute) GetData(selectedRoles []string, user *discordgo.User) *discordgo.InteractionResponseData {
+func (AddDropdownExecute) GetData(selectedRoles []string, user *discordgo.User) *discordgo.InteractionResponseData {
 	return getEmbedData(":green_circle:   New Roles   :green_circle:", selectedRoles, user)
 }
 
-func (_ RemoveDropdownExecute) ChangeUser(guildID, userID, roleID string, session *discordgo.Session) (err error) {
+func (RemoveDropdownExecute) ChangeUser(guildID, userID, roleID string, session *discordgo.Session) (err error) {
 	err = session.GuildMemberRoleRemove(guildID, userID, roleID)
 	if err != nil {
 		return err
@@ -82,7 +83,7 @@ func (_ RemoveDropdownExecute) ChangeUser(guildID, userID, roleID string, sessio
 	return nil
 }
 
-func (_ RemoveDropdownExecute) GetData(selectedRoles []string, user *discordgo.User) *discordgo.InteractionResponseData {
+func (RemoveDropdownExecute) GetData(selectedRoles []string, user *discordgo.User) *discordgo.InteractionResponseData {
 	return getEmbedData(":red_circle:   Removed Roles   :red_circle:", selectedRoles, user)
 }
 
