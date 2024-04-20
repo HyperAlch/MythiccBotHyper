@@ -1,13 +1,13 @@
 package main
 
 import (
+	"MythiccBotHyper/commands"
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/db"
 	g "MythiccBotHyper/globals"
 	majorlogs "MythiccBotHyper/majorLogs"
 	"MythiccBotHyper/messageComponents"
 	"MythiccBotHyper/minorLogs"
-	"MythiccBotHyper/slashcommands"
 	"database/sql"
 	"fmt"
 	"log"
@@ -59,7 +59,7 @@ func main() {
 		panic(err)
 	}
 
-	slashcommands.RegisterCommands()
+	commands.RegisterCommands()
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running.  Press CTRL-C to exit...")
@@ -67,7 +67,7 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	slashcommands.UnregisterCommands()
+	commands.UnregisterCommands()
 
 	// Cleanly close down the Discord session.
 	defer func(Bot *discordgo.Session) {
@@ -81,8 +81,8 @@ func main() {
 
 }
 
-const messageComponent = 3 /* Button press, dropdown select, etc 	*/
-const slashCommand = 2     /* Registered bot slash commands 		*/
+const messageComponentValue = 3 /* Button press, dropdown select, etc 	*/
+const slashCommandValue = 2     /* Registered bot slash commands 		*/
 
 func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.InteractionCreate) {
 	defer func() {
@@ -98,12 +98,12 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 		}
 	}
 
-	if interactionCreate.Type == messageComponent {
+	if interactionCreate.Type == messageComponentValue {
 		executeInteraction(
 			interactionCreate.MessageComponentData().CustomID,
 			messageComponents.MessageComponentHandlers,
 		)
-	} else if interactionCreate.Type == slashCommand {
+	} else if interactionCreate.Type == slashCommandValue {
 		interaction := interactionCreate.Interaction
 		user, err := datatype.NewUserFromInteraction(interaction)
 		if err != nil {
@@ -118,7 +118,7 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 
 		executeInteraction(
 			interactionCreate.ApplicationCommandData().Name,
-			slashcommands.CommandHandlers,
+			commands.CommandHandlers,
 		)
 	} else {
 		log.Println("unknown interaction type:", interactionCreate.Type.String())

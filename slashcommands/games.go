@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	gamesDetails = discordgo.ApplicationCommand{
+	GamesDetails = discordgo.ApplicationCommand{
 		Name:        "games",
 		Description: "Add, delete, or list games",
 		Options: []*discordgo.ApplicationCommandOption{
@@ -52,7 +52,7 @@ var (
 	}
 )
 
-func games(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func Games(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	contentMessage := ""
 
 	options := interaction.ApplicationCommandData().Options

@@ -1,19 +1,20 @@
 package slashcommands
 
 import (
-	"github.com/bwmarrin/discordgo"
 	"log"
 	"strings"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (
-	pickGamesMenuDetails = discordgo.ApplicationCommand{
+	PickGamesMenuDetails = discordgo.ApplicationCommand{
 		Name:        "pick_games_menu",
 		Description: "Setup the `Pick Your Games` menu",
 	}
 )
 
-func pickGamesMenu(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func PickGamesMenu(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	var instructions = make([]string, 3)
 
 	instructions[0] = ":green_circle: **Add** - Press to get a dropdown of all available game roles that you don't already have, select the ones you want.\n\n"

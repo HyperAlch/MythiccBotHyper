@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	adminsDetails = discordgo.ApplicationCommand{
+	AdminsDetails = discordgo.ApplicationCommand{
 		Name:        "admins",
 		Description: "Add, delete, or list admins",
 		Options: []*discordgo.ApplicationCommandOption{
@@ -53,7 +53,7 @@ var (
 	}
 )
 
-func admins(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func Admins(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	contentMessage := ""
 	user, err := datatype.NewUserFromInteraction(interaction.Interaction)
 	if err != nil || !user.IsMasterAdmin() {

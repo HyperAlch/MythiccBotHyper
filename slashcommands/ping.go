@@ -8,13 +8,13 @@ import (
 )
 
 var (
-	pingDetails = discordgo.ApplicationCommand{
+	PingDetails = discordgo.ApplicationCommand{
 		Name:        "ping",
 		Description: "Check if bot is online",
 	}
 )
 
-func ping(_ *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func Ping(_ *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	err := globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{

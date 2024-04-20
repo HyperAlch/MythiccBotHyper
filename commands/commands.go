@@ -1,28 +1,29 @@
-package slashcommands
+package commands
 
 import (
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
-	"github.com/bwmarrin/discordgo"
+	"MythiccBotHyper/slashcommands"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (
-	pruneAmount = 1.0
-	Commands    = []*discordgo.ApplicationCommand{
+	Commands = []*discordgo.ApplicationCommand{
 		//&pingDetails,
-		&pruneDetails,
-		&adminsDetails,
-		&gamesDetails,
-		&pickGamesMenuDetails,
+		&slashcommands.PruneDetails,
+		&slashcommands.AdminsDetails,
+		&slashcommands.GamesDetails,
+		&slashcommands.PickGamesMenuDetails,
 	}
 
 	CommandHandlers = datatype.InteractionMap{
-		"ping":            ping,
-		"prune":           prune,
-		"admins":          admins,
-		"games":           games,
-		"pick_games_menu": pickGamesMenu,
+		"ping":            slashcommands.Ping,
+		"prune":           slashcommands.Prune,
+		"admins":          slashcommands.Admins,
+		"games":           slashcommands.Games,
+		"pick_games_menu": slashcommands.PickGamesMenu,
 	}
 )
 

@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	pruneDetails = discordgo.ApplicationCommand{
+	pruneAmount  = 1.0
+	PruneDetails = discordgo.ApplicationCommand{
 		Name:        "prune",
 		Description: "Delete `x` amount of messages",
 		Options: []*discordgo.ApplicationCommandOption{
@@ -26,7 +27,7 @@ var (
 	}
 )
 
-func prune(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func Prune(state *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	contentMessage := func() string {
 		message := ""
 		// Only admins are allowed to do this
