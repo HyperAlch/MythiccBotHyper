@@ -112,14 +112,17 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 		}
 
 		if !user.IsAdmin() {
-			log.Printf("Non-admin user %v tried to execute a slash command\n", user.Get())
-			return
+			executeInteraction(
+				interactionCreate.ApplicationCommandData().Name,
+				commands.CommandHandlers,
+			)
+		} else {
+			executeInteraction(
+				interactionCreate.ApplicationCommandData().Name,
+				commands.AdminCommandHandlers,
+			)
 		}
 
-		executeInteraction(
-			interactionCreate.ApplicationCommandData().Name,
-			commands.CommandHandlers,
-		)
 	} else {
 		log.Println("unknown interaction type:", interactionCreate.Type.String())
 	}

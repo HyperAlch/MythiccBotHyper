@@ -1,6 +1,7 @@
 package commands
 
 import (
+	applicationcommands "MythiccBotHyper/applicationCommands"
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
 	"MythiccBotHyper/slashcommands"
@@ -16,14 +17,20 @@ var (
 		&slashcommands.AdminsDetails,
 		&slashcommands.GamesDetails,
 		&slashcommands.PickGamesMenuDetails,
+		&applicationcommands.GuildApplyDetails,
 	}
 
-	CommandHandlers = datatype.InteractionMap{
+	AdminCommandHandlers = datatype.InteractionMap{
 		"ping":            slashcommands.Ping,
 		"prune":           slashcommands.Prune,
 		"admins":          slashcommands.Admins,
 		"games":           slashcommands.Games,
 		"pick_games_menu": slashcommands.PickGamesMenu,
+		"Guild Apply":     applicationcommands.GuildApply,
+	}
+
+	CommandHandlers = datatype.InteractionMap{
+		"Guild Apply": applicationcommands.GuildApply,
 	}
 )
 
