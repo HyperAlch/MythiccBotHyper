@@ -5,9 +5,10 @@ import (
 	"MythiccBotHyper/model"
 	"MythiccBotHyper/utils"
 	"errors"
-	"github.com/bwmarrin/discordgo"
 	"log"
 	"slices"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func pickGamesDropdown(session *discordgo.Session, interaction *discordgo.InteractionCreate, dropdown GamesDropdown) {
@@ -102,10 +103,10 @@ func pickGamesDropdown(session *discordgo.Session, interaction *discordgo.Intera
 
 }
 
-func pickGamesAdd(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func PickGamesAdd(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	pickGamesDropdown(session, interaction, AddDropdown{})
 }
 
-func pickGamesRemove(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func PickGamesRemove(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	pickGamesDropdown(session, interaction, RemoveDropdown{})
 }

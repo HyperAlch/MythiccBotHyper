@@ -6,7 +6,6 @@ import (
 	"MythiccBotHyper/db"
 	g "MythiccBotHyper/globals"
 	majorlogs "MythiccBotHyper/majorLogs"
-	"MythiccBotHyper/messageComponents"
 	"MythiccBotHyper/minorLogs"
 	"database/sql"
 	"fmt"
@@ -88,38 +87,41 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 		}
 	}()
 
-	executeInteraction := func(key string, interactionMap datatype.InteractionMap) {
+	executeInteraction := func(
+		key string,
+		user datatype.User,
+	) {
+		interactionMap := commands.CommandHandlers
+		if user.IsAdmin() {
+			interactionMap = commands.AdminCommandHandlers
+		}
+
 		handler, ok := interactionMap[key]
 		if ok {
 			handler(session, interactionCreate)
 		}
 	}
 
+	interaction := interactionCreate.Interaction
+	user, err := datatype.NewUserFromInteraction(interaction)
+	if err != nil {
+		log.Println("Could not get custom `datatype.User` from interaction")
+		return
+	}
+
 	switch interactionCreate.Type {
 	case discordgo.InteractionMessageComponent:
 		executeInteraction(
 			interactionCreate.MessageComponentData().CustomID,
-			messageComponents.MessageComponentHandlers,
+			user,
 		)
 	case discordgo.InteractionApplicationCommand:
-		interaction := interactionCreate.Interaction
-		user, err := datatype.NewUserFromInteraction(interaction)
-		if err != nil {
-			log.Println("Could not get custom `datatype.User` from interaction")
-			return
-		}
-
-		if !user.IsAdmin() {
-			executeInteraction(
-				interactionCreate.ApplicationCommandData().Name,
-				commands.CommandHandlers,
-			)
-		} else {
-			executeInteraction(
-				interactionCreate.ApplicationCommandData().Name,
-				commands.AdminCommandHandlers,
-			)
-		}
+		executeInteraction(
+			interactionCreate.ApplicationCommandData().Name,
+			user,
+		)
+	case discordgo.InteractionModalSubmit:
+		log.Println("Modal submit")
 	default:
 		log.Println("unknown interaction type:", interactionCreate.Type.String())
 	}

@@ -4,6 +4,7 @@ import (
 	applicationcommands "MythiccBotHyper/applicationCommands"
 	"MythiccBotHyper/datatype"
 	"MythiccBotHyper/globals"
+	"MythiccBotHyper/messageComponents"
 	"MythiccBotHyper/slashcommands"
 	"log"
 
@@ -30,7 +31,11 @@ var (
 	}
 
 	CommandHandlers = datatype.InteractionMap{
-		"Guild Apply": applicationcommands.GuildApply,
+		"Guild Apply":               applicationcommands.GuildApply,
+		"pick-games-add":            messageComponents.PickGamesAdd,
+		"pick-games-remove":         messageComponents.PickGamesRemove,
+		"pick-games-add-execute":    messageComponents.PickGamesAddExecute,
+		"pick-games-remove-execute": messageComponents.PickGamesRemoveExecute,
 	}
 )
 

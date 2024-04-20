@@ -12,7 +12,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func pickGamesAddExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func PickGamesAddExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	selectedRoles, data := pickGamesExecute(session, interaction, AddDropdownExecute{})
 	guildApplyRoles := strings.Split(globals.GuildApplyRoles, ",")
 	for i, role := range guildApplyRoles {
@@ -36,7 +36,7 @@ func pickGamesAddExecute(session *discordgo.Session, interaction *discordgo.Inte
 	}
 }
 
-func pickGamesRemoveExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func PickGamesRemoveExecute(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	_, data := pickGamesExecute(session, interaction, RemoveDropdownExecute{})
 
 	err := session.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
