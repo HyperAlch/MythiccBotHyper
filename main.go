@@ -81,9 +81,6 @@ func main() {
 
 }
 
-const messageComponentValue = 3 /* Button press, dropdown select, etc 	*/
-const slashCommandValue = 2     /* Registered bot slash commands 		*/
-
 func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.InteractionCreate) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -98,12 +95,13 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 		}
 	}
 
-	if interactionCreate.Type == messageComponentValue {
+	switch interactionCreate.Type {
+	case discordgo.InteractionMessageComponent:
 		executeInteraction(
 			interactionCreate.MessageComponentData().CustomID,
 			messageComponents.MessageComponentHandlers,
 		)
-	} else if interactionCreate.Type == slashCommandValue {
+	case discordgo.InteractionApplicationCommand:
 		interaction := interactionCreate.Interaction
 		user, err := datatype.NewUserFromInteraction(interaction)
 		if err != nil {
@@ -122,8 +120,7 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 				commands.AdminCommandHandlers,
 			)
 		}
-
-	} else {
+	default:
 		log.Println("unknown interaction type:", interactionCreate.Type.String())
 	}
 }
