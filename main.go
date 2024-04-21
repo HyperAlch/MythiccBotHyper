@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"maps"
 	"os"
 	"os/signal"
 	"syscall"
@@ -94,6 +95,7 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 		interactionMap := commands.CommandHandlers
 		if user.IsAdmin() {
 			interactionMap = commands.AdminCommandHandlers
+			maps.Copy(interactionMap, commands.CommandHandlers)
 		}
 
 		handler, ok := interactionMap[key]

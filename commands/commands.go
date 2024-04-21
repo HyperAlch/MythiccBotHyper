@@ -27,7 +27,6 @@ var (
 		"admins":          slashcommands.Admins,
 		"games":           slashcommands.Games,
 		"pick_games_menu": slashcommands.PickGamesMenu,
-		"Guild Apply":     applicationcommands.GuildApply,
 	}
 
 	CommandHandlers = datatype.InteractionMap{
