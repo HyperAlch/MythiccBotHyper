@@ -123,7 +123,10 @@ func interactionCreate(session *discordgo.Session, interactionCreate *discordgo.
 			user,
 		)
 	case discordgo.InteractionModalSubmit:
-		log.Println("Modal submit")
+		executeInteraction(
+			interactionCreate.ModalSubmitData().CustomID,
+			user,
+		)
 	default:
 		log.Println("unknown interaction type:", interactionCreate.Type.String())
 	}
