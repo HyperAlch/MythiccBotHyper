@@ -48,8 +48,6 @@ func GuildApply(session *discordgo.Session, interaction *discordgo.InteractionCr
 		}
 	}
 
-	// TODO: Receive the modal response inside a different function
-
 	session.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
 		Type: responseType,
 		Data: responseData,
