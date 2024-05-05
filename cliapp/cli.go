@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/urfave/cli/v2"
 )
@@ -25,9 +26,24 @@ func CLIApp() {
 						Name:  "detached",
 						Usage: "Start as a background process",
 						Action: func(cCtx *cli.Context) error {
-							fmt.Println("starting detached bot...")
-							// TODO
-							return nil
+							fmt.Println("Starting detached bot...")
+							pid, err := runProcess()
+							if pid != nil {
+								fmt.Println("Bot PID:", *pid)
+								pidFileContent := []byte(fmt.Sprintf("%v", *pid))
+								err2 := os.WriteFile("./.pid", pidFileContent, 0644)
+								if err2 != nil {
+									return err2
+								}
+
+								filename := []byte(filepath.Base(os.Args[0]))
+								err2 = os.WriteFile("./.exeName", filename, 0644)
+								if err2 != nil {
+									return err2
+								}
+							}
+
+							return err
 						},
 					},
 					{

@@ -3,8 +3,6 @@ package cliapp
 import (
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 	"syscall"
 )
 
@@ -21,7 +19,7 @@ func runProcess() (*int, error) {
 		},
 		Sys: system_process,
 	}
-	process, err := os.StartProcess("/bin/sleep", []string{"sleep", "300"}, &attr)
+	process, err := os.StartProcess("./MythiccBotHyper", []string{"MythiccBotHyper", "start", "attached"}, &attr)
 	if err == nil {
 		pid = process.Pid
 		// It is not clear from docs, but Release actually detaches the process
@@ -64,16 +62,5 @@ func getCommandFromPID(pid int) (string, error) {
 	// The command line arguments are separated by null bytes in the file
 	cmdLine := string(cmdLineBytes)
 
-	// Replace null bytes with spaces to make the command line more readable
-	cmdLine = replaceNullBytesWithSpace(cmdLine)
-
 	return cmdLine, nil
-}
-
-func replaceNullBytesWithSpace(s string) string {
-	// Replace null bytes with spaces
-	// This function helps in making the command line more readable
-	output := strconv.QuoteToASCII(s)[1 : len(s)-1]
-	output = strings.ReplaceAll(output, "\\x", " ")
-	return output
 }
