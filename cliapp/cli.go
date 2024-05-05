@@ -60,8 +60,24 @@ func CLIApp() {
 				Name:  "check",
 				Usage: "Check if the bot is running in the background",
 				Action: func(ctx *cli.Context) error {
-					fmt.Println("Checking if bot is running")
-					// TODO
+					fmt.Println("Checking if bot is running...")
+					record, err := getProcessRecords()
+					if err != nil {
+						return err
+					}
+
+					alive := isProcessRunning(record.pid)
+					execNameLength := len(record.name)
+					execName, err := getCommandFromPID(record.pid)
+					if err != nil {
+						return fmt.Errorf("could not find process with pid %v", record.pid)
+					}
+
+					if alive && record.name == execName[0:execNameLength] {
+						fmt.Println("Bot is alive!")
+					} else {
+						fmt.Println("Bot seems to be offline...")
+					}
 					return nil
 				},
 			},

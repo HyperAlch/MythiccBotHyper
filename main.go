@@ -4,13 +4,6 @@ import "MythiccBotHyper/cliapp"
 
 func main() {
 	cliapp.CLIApp()
-	// [Run a process]
-	// pid, err := runProcess()
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-	// log.Println(*pid)
-
 	// [Check if process is running]
 	// alive := isProcessRunning(37144)
 	// if alive {
@@ -23,6 +16,4 @@ func main() {
 	// 	log.Println(err.Error())
 	// }
 	// log.Println(cmdName)
-
-	// startBot()
 }
