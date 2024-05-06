@@ -3,6 +3,7 @@ package cliapp
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"syscall"
 )
 
@@ -63,4 +64,32 @@ func getCommandFromPID(pid int) (string, error) {
 	cmdLine := string(cmdLineBytes)
 
 	return cmdLine, nil
+}
+
+func shutdownProcess(pid int) error {
+	// Find the process by PID
+	process, err := os.FindProcess(pid)
+	if err != nil {
+		return fmt.Errorf("error finding process: %v", err)
+	}
+
+	// Send SIGTERM signal to the process
+	err = process.Signal(syscall.SIGTERM)
+	if err != nil {
+		return fmt.Errorf("error sending SIGTERM signal: %v", err)
+	}
+
+	return nil
+	// Wait for the process to exit
+	// waitForProcessExit(process)
+	// fmt.Println("Process with PID", pid, "has gracefully shut down.")
+}
+
+func waitForProcessExit(process *os.Process) {
+	// Create a channel to receive signals
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGCHLD)
+
+	// Wait for the process to exit
+	<-sigCh
 }

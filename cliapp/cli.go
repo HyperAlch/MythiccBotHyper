@@ -1,6 +1,8 @@
 package cliapp
 
 import (
+	botprocess "MythiccBotHyper/cliapp/botProcess"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -10,6 +12,32 @@ import (
 )
 
 func CLIApp() {
+	botIsRunning := func() (bool, error) {
+		fmt.Println("Checking if bot is running...")
+		record := botprocess.BotProcess{}
+
+		err := record.GetProcessRecords()
+		// record, err := getProcessRecords()
+		if err != nil {
+			return false, err
+		}
+
+		alive := isProcessRunning(record.PID)
+		execNameLength := len(record.Name)
+		execName, err := getCommandFromPID(record.PID)
+		if err != nil {
+			return false, fmt.Errorf("could not find process with pid %v", record.PID)
+		}
+
+		if alive && record.Name == execName[0:execNameLength] {
+			fmt.Println("Bot is alive!")
+			return true, nil
+		} else {
+			fmt.Println("Bot seems to be offline...")
+			return false, nil
+		}
+	}
+
 	app := &cli.App{
 		Name:  "MythiccBot",
 		Usage: "Manage your Mythicc Bot instance",
@@ -60,33 +88,25 @@ func CLIApp() {
 				Name:  "check",
 				Usage: "Check if the bot is running in the background",
 				Action: func(ctx *cli.Context) error {
-					fmt.Println("Checking if bot is running...")
-					record, err := getProcessRecords()
-					if err != nil {
-						return err
-					}
+					_, err := botIsRunning()
 
-					alive := isProcessRunning(record.pid)
-					execNameLength := len(record.name)
-					execName, err := getCommandFromPID(record.pid)
-					if err != nil {
-						return fmt.Errorf("could not find process with pid %v", record.pid)
-					}
-
-					if alive && record.name == execName[0:execNameLength] {
-						fmt.Println("Bot is alive!")
-					} else {
-						fmt.Println("Bot seems to be offline...")
-					}
-					return nil
+					return err
 				},
 			},
 			{
 				Name:  "stop",
 				Usage: "Stop the bot if running in the background",
 				Action: func(ctx *cli.Context) error {
-					fmt.Println("Stopping bot...")
-					// TODO
+					alive, err := botIsRunning()
+					if err != nil {
+						return err
+					}
+
+					if alive {
+						fmt.Println("Stopping bot...")
+					} else {
+						return errors.New("bot seems to be offline")
+					}
 					return nil
 				},
 			},
