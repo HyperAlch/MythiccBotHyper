@@ -12,29 +12,20 @@ import (
 )
 
 func CLIApp() {
-	botIsRunning := func() (bool, error) {
-		fmt.Println("Checking if bot is running...")
-		record := botprocess.BotProcess{}
-
-		err := record.GetProcessRecords()
-		// record, err := getProcessRecords()
-		if err != nil {
-			return false, err
+	if _, err := os.Stat("./.pid"); errors.Is(err, os.ErrNotExist) {
+		pidFileContent := []byte(fmt.Sprintf("%v", 0))
+		err2 := os.WriteFile("./.pid", pidFileContent, 0644)
+		if err2 != nil {
+			panic(err2)
 		}
 
-		alive := isProcessRunning(record.PID)
-		execNameLength := len(record.Name)
-		execName, err := getCommandFromPID(record.PID)
-		if err != nil {
-			return false, fmt.Errorf("could not find process with pid %v", record.PID)
-		}
+	}
 
-		if alive && record.Name == execName[0:execNameLength] {
-			fmt.Println("Bot is alive!")
-			return true, nil
-		} else {
-			fmt.Println("Bot seems to be offline...")
-			return false, nil
+	if _, err := os.Stat("./.exeName"); errors.Is(err, os.ErrNotExist) {
+		filename := []byte(filepath.Base(os.Args[0]))
+		err2 := os.WriteFile("./.exeName", filename, 0644)
+		if err2 != nil {
+			panic(err2)
 		}
 	}
 
@@ -55,23 +46,14 @@ func CLIApp() {
 						Usage: "Start as a background process",
 						Action: func(cCtx *cli.Context) error {
 							fmt.Println("Starting detached bot...")
-							pid, err := runProcess()
-							if pid != nil {
-								fmt.Println("Bot PID:", *pid)
-								pidFileContent := []byte(fmt.Sprintf("%v", *pid))
-								err2 := os.WriteFile("./.pid", pidFileContent, 0644)
-								if err2 != nil {
-									return err2
-								}
-
-								filename := []byte(filepath.Base(os.Args[0]))
-								err2 = os.WriteFile("./.exeName", filename, 0644)
-								if err2 != nil {
-									return err2
-								}
+							botProcess, err := botprocess.SpawnProcess()
+							if botProcess != nil {
+								fmt.Println("Bot PID:", botProcess.PID())
+							} else {
+								return err
 							}
 
-							return err
+							return nil
 						},
 					},
 					{
@@ -88,26 +70,39 @@ func CLIApp() {
 				Name:  "check",
 				Usage: "Check if the bot is running in the background",
 				Action: func(ctx *cli.Context) error {
-					_, err := botIsRunning()
+					botProcess, err := botprocess.FetchProcess()
+					if err != nil {
+						return err
+					}
 
-					return err
+					if botProcess.IsRunning() {
+						fmt.Println("Bot is running...")
+					} else {
+						fmt.Println("Bot is offline...")
+					}
+
+					return nil
 				},
 			},
 			{
 				Name:  "stop",
 				Usage: "Stop the bot if running in the background",
 				Action: func(ctx *cli.Context) error {
-					alive, err := botIsRunning()
+					botProcess, err := botprocess.FetchProcess()
 					if err != nil {
 						return err
 					}
 
-					if alive {
-						fmt.Println("Stopping bot...")
-					} else {
-						return errors.New("bot seems to be offline")
+					if !botProcess.IsRunning() {
+						fmt.Println("Bot is already offline!")
+						return nil
 					}
-					return nil
+
+					err = botProcess.Stop()
+					if err == nil {
+						fmt.Println("Bot process was shutdown...")
+					}
+					return err
 				},
 			},
 			{
