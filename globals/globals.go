@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -15,7 +14,6 @@ var (
 	Token               string
 	GuildID             string
 	Bot                 *discordgo.Session
-	DropTables          bool
 	MasterAdmin         string
 	MinorEventsChannel  string
 	MajorEventsChannel  string
@@ -28,7 +26,6 @@ var (
 func init() {
 	envVars, err := loadFromEnv("DISCORD_TOKEN",
 		"GUILD_ID",
-		"DROP_TABLES",
 		"MASTER_ADMIN",
 		"MINOR_EVENTS_CHANNEL",
 		"MAJOR_EVENTS_CHANNEL",
@@ -50,11 +47,6 @@ func init() {
 	GuildApplyRoles = envVars["GUILD_APPLY_ROLES"]
 	NeedsToApplyRole = envVars["NEEDS_TO_APPLY_ROLE"]
 	NeedsToApplyChannel = envVars["NEEDS_TO_APPLY_CHANNEL"]
-
-	DropTables, err = strconv.ParseBool(envVars["DROP_TABLES"])
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	// Create a new Discord session using the provided Bot token.
 	Bot, err = discordgo.New("Bot " + Token)

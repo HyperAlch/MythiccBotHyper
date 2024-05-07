@@ -1,10 +1,10 @@
 package db
 
 import (
-	"MythiccBotHyper/globals"
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var DB *sql.DB
@@ -19,10 +19,6 @@ func init() {
 	DB.SetMaxIdleConns(5)
 
 	createDevTables()
-
-	if globals.DropTables {
-		dropTables()
-	}
 	createTables()
 }
 
@@ -31,7 +27,7 @@ func createTables() {
 	createGamesTable()
 }
 
-func dropTables() {
+func DropTables() {
 	dropAdminsTable()
 	dropGamesTable()
 }

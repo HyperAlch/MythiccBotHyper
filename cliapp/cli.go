@@ -3,12 +3,15 @@ package cliapp
 import (
 	botprocess "MythiccBotHyper/cliapp/botProcess"
 	"MythiccBotHyper/commands"
+	"MythiccBotHyper/db"
 	g "MythiccBotHyper/globals"
 	"errors"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -116,7 +119,17 @@ func CLIApp() {
 						Usage: "Reset the current database and empty the tables",
 						Action: func(cCtx *cli.Context) error {
 							fmt.Println("Resetting the database...")
-							// TODO
+							botProcess, err := botprocess.FetchProcess()
+							if err != nil {
+								return err
+							}
+
+							if botProcess.IsRunning() {
+								fmt.Println("Bot must be offline to perform this action!!")
+								return nil
+							}
+							db.DropTables()
+							fmt.Println("Reset was successful!!")
 							return nil
 						},
 					},
@@ -125,7 +138,30 @@ func CLIApp() {
 						Usage: "Backup the current database",
 						Action: func(cCtx *cli.Context) error {
 							fmt.Println("Backing up the current database...")
-							// TODO
+							botProcess, err := botprocess.FetchProcess()
+							if err != nil {
+								return err
+							}
+
+							if botProcess.IsRunning() {
+								fmt.Println("Bot must be offline to perform this action!!")
+								return nil
+							}
+
+							input, err := os.ReadFile("./discord_bot.sqlite")
+							if err != nil {
+								return err
+							}
+							_ = os.Mkdir("./sqlBackup", 0755)
+							timeDate := strings.Split(time.Now().String(), ".")[0]
+							timeDate = strings.ReplaceAll(timeDate, " ", "_")
+
+							fileName := fmt.Sprintf("./sqlBackup/discord_bot_%v.sqlite", timeDate)
+							err = os.WriteFile(fileName, input, 0644)
+							if err != nil {
+								return err
+							}
+							fmt.Println("Backup success, file name:", fileName)
 							return nil
 						},
 					},

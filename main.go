@@ -1,6 +1,8 @@
 package main
 
-import "MythiccBotHyper/cliapp"
+import (
+	"MythiccBotHyper/cliapp"
+)
 
 func main() {
 	cliapp.CLIApp()
