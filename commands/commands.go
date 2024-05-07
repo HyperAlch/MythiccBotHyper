@@ -75,22 +75,20 @@ func RegisterCommands() {
 
 }
 func UnregisterCommands() {
-	if globals.RemoveCommands {
-		log.Println("Removing commands...")
+	log.Println("Removing commands...")
 
-		// Get all registered commands
-		registeredCommands, err := globals.Bot.ApplicationCommands(globals.Bot.State.User.ID, globals.GuildID)
+	// Get all registered commands
+	registeredCommands, err := globals.Bot.ApplicationCommands(globals.Bot.State.User.ID, globals.GuildID)
+	if err != nil {
+		log.Fatalf("Could not fetch registered commandsExample: %v", err)
+	}
+
+	// Remove all the commands
+	for _, command := range registeredCommands {
+		log.Printf("Removing %v\n", command.Name)
+		err := globals.Bot.ApplicationCommandDelete(globals.Bot.State.User.ID, globals.GuildID, command.ID)
 		if err != nil {
-			log.Fatalf("Could not fetch registered commandsExample: %v", err)
-		}
-
-		// Remove all the commands
-		for _, command := range registeredCommands {
-			log.Printf("Removing %v\n", command.Name)
-			err := globals.Bot.ApplicationCommandDelete(globals.Bot.State.User.ID, globals.GuildID, command.ID)
-			if err != nil {
-				log.Panicf("Cannot delete '%v' command: %v", command.Name, err)
-			}
+			log.Panicf("Cannot delete '%v' command: %v", command.Name, err)
 		}
 	}
 }

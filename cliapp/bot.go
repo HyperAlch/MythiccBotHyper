@@ -59,15 +59,11 @@ func startBot() {
 		panic(err)
 	}
 
-	commands.RegisterCommands()
-
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running.  Press CTRL-C to exit...")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
-
-	commands.UnregisterCommands()
 
 	// Cleanly close down the Discord session.
 	defer func(Bot *discordgo.Session) {

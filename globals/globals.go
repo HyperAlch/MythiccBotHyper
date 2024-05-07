@@ -15,7 +15,6 @@ var (
 	Token               string
 	GuildID             string
 	Bot                 *discordgo.Session
-	RemoveCommands      bool
 	DropTables          bool
 	MasterAdmin         string
 	MinorEventsChannel  string
@@ -29,7 +28,6 @@ var (
 func init() {
 	envVars, err := loadFromEnv("DISCORD_TOKEN",
 		"GUILD_ID",
-		"REMOVE_COMMANDS",
 		"DROP_TABLES",
 		"MASTER_ADMIN",
 		"MINOR_EVENTS_CHANNEL",
@@ -52,10 +50,6 @@ func init() {
 	GuildApplyRoles = envVars["GUILD_APPLY_ROLES"]
 	NeedsToApplyRole = envVars["NEEDS_TO_APPLY_ROLE"]
 	NeedsToApplyChannel = envVars["NEEDS_TO_APPLY_CHANNEL"]
-	RemoveCommands, err = strconv.ParseBool(envVars["REMOVE_COMMANDS"])
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	DropTables, err = strconv.ParseBool(envVars["DROP_TABLES"])
 	if err != nil {

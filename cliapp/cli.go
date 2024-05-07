@@ -2,6 +2,8 @@ package cliapp
 
 import (
 	botprocess "MythiccBotHyper/cliapp/botProcess"
+	"MythiccBotHyper/commands"
+	g "MythiccBotHyper/globals"
 	"errors"
 	"fmt"
 	"log"
@@ -138,7 +140,15 @@ func CLIApp() {
 						Usage: "Register all commands",
 						Action: func(cCtx *cli.Context) error {
 							fmt.Println("Registering all commands...")
-							// TODO
+							if g.Bot == nil {
+								return errors.New("pointer to Bot is nil")
+							}
+							err := g.Bot.Open()
+							if err != nil {
+								return err
+							}
+							commands.RegisterCommands()
+							g.Bot.Close()
 							return nil
 						},
 					},
@@ -147,7 +157,15 @@ func CLIApp() {
 						Usage: "Unregister all commands",
 						Action: func(cCtx *cli.Context) error {
 							fmt.Println("Un-registering all commands...")
-							// TODO
+							if g.Bot == nil {
+								return errors.New("pointer to Bot is nil")
+							}
+							err := g.Bot.Open()
+							if err != nil {
+								return err
+							}
+							commands.UnregisterCommands()
+							g.Bot.Close()
 							return nil
 						},
 					},
