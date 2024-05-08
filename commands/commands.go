@@ -28,6 +28,8 @@ var (
 		"admins":          slashcommands.Admins,
 		"games":           slashcommands.Games,
 		"pick_games_menu": slashcommands.PickGamesMenu,
+		// TODO: Make a "Triggered!" applicationcommand
+		// TODO: Make a "Release triggered!" applicationcommand
 	}
 
 	CommandHandlers = datatype.InteractionMap{

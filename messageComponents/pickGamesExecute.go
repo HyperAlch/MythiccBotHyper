@@ -18,6 +18,8 @@ func PickGamesAddExecute(session *discordgo.Session, interaction *discordgo.Inte
 	for i, role := range guildApplyRoles {
 		guildApplyRoles[i] = interactives.FromRoleId(role)
 		if slices.Contains(selectedRoles, guildApplyRoles[i]) {
+
+			// TODO: Make a NeedsToApplyHelpChannel global and use it
 			msg := fmt.Sprintf("# Guild Application Required!\n%v", interactives.FromChannelId(globals.NeedsToApplyChannel))
 			data.Embeds = append(data.Embeds, &discordgo.MessageEmbed{
 				Title:       "Guild Application Required!",
