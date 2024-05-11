@@ -12,6 +12,7 @@ import (
 )
 
 func GuildMemberAdd(session *discordgo.Session, guildMemberAddData *discordgo.GuildMemberAdd) {
+	// TODO: Update CustomMembersState
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Bot Recovered:", r)

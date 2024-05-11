@@ -40,6 +40,25 @@ func GuildMemberRemove(session *discordgo.Session, guildMemberRemoveData *discor
 		years, months, days,
 	)
 
+	userRoles := []string{"Unknown"}
+
+	if g.CustomMembersState.Length() > 0 {
+		for i, member := range g.CustomMembersState.Members() {
+			if member.User.ID == user.ID {
+				if len(member.Roles) > 0 {
+					userRoles = []string{}
+					for _, role := range member.Roles {
+						userRoles = append(userRoles, interactives.FromRoleId(role))
+					}
+				} else {
+					userRoles[0] = "No roles"
+				}
+				go g.CustomMembersState.Delete(i)
+				break
+			}
+		}
+	}
+
 	fields := []*discordgo.MessageEmbedField{
 		{
 			Name:   "Account Age",

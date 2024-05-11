@@ -21,6 +21,7 @@ var (
 	GuildApplyRoles     string
 	NeedsToApplyRole    string
 	NeedsToApplyChannel string
+	CustomMembersState  *MembersState
 )
 
 func init() {
@@ -36,6 +37,10 @@ func init() {
 	)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	CustomMembersState = &MembersState{
+		members: []*discordgo.Member{},
 	}
 
 	Token = envVars["DISCORD_TOKEN"]

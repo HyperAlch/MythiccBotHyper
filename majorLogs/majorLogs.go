@@ -12,6 +12,7 @@ import (
 
 // Triggered when a users Nickname or Roles change
 func GuildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.GuildMemberUpdate) {
+	// TODO: Update CustomMembersState
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Bot Recovered:", r)
