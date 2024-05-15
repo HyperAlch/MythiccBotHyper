@@ -5,9 +5,10 @@ import (
 	"MythiccBotHyper/interactives"
 	"MythiccBotHyper/utils"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func VoiceStateUpdate(session *discordgo.Session, voiceState *discordgo.VoiceStateUpdate) {
@@ -78,6 +79,10 @@ func VoiceStateUpdate(session *discordgo.Session, voiceState *discordgo.VoiceSta
 			Text: userIdText,
 		},
 		Timestamp: timeStamp,
+	}
+
+	if embedTitle == "" {
+		return
 	}
 
 	_, err := session.ChannelMessageSendEmbed(
