@@ -79,9 +79,8 @@ func guildApplySendDirections(session *discordgo.Session, user *discordgo.User) 
 		return
 	}
 
-	// TODO: Make a NeedsToApplyHelpChannel global and use it
 	msg := fmt.Sprintf("# Guild Application Required!\n%v",
-		interactives.FromChannelId(g.NeedsToApplyChannel),
+		interactives.FromChannelId(g.NeedsToApplyGuideChannel),
 	)
 
 	_, err = session.ChannelMessageSend(channel.ID, msg)

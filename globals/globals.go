@@ -11,17 +11,18 @@ import (
 )
 
 var (
-	Token               string
-	GuildID             string
-	Bot                 *discordgo.Session
-	MasterAdmin         string
-	MinorEventsChannel  string
-	MajorEventsChannel  string
-	FollowerRole        string
-	GuildApplyRoles     string
-	NeedsToApplyRole    string
-	NeedsToApplyChannel string
-	CustomMembersState  *MembersState
+	Token                    string
+	GuildID                  string
+	Bot                      *discordgo.Session
+	MasterAdmin              string
+	MinorEventsChannel       string
+	MajorEventsChannel       string
+	FollowerRole             string
+	GuildApplyRoles          string
+	NeedsToApplyRole         string
+	NeedsToApplyChannel      string
+	NeedsToApplyGuideChannel string
+	CustomMembersState       *MembersState
 )
 
 func init() {
@@ -34,6 +35,7 @@ func init() {
 		"GUILD_APPLY_ROLES",
 		"NEEDS_TO_APPLY_ROLE",
 		"NEEDS_TO_APPLY_CHANNEL",
+		"NEEDS_TO_APPLY_GUIDE_CHANNEL",
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -52,6 +54,7 @@ func init() {
 	GuildApplyRoles = envVars["GUILD_APPLY_ROLES"]
 	NeedsToApplyRole = envVars["NEEDS_TO_APPLY_ROLE"]
 	NeedsToApplyChannel = envVars["NEEDS_TO_APPLY_CHANNEL"]
+	NeedsToApplyGuideChannel = envVars["NEEDS_TO_APPLY_GUIDE_CHANNEL"]
 
 	// Create a new Discord session using the provided Bot token.
 	Bot, err = discordgo.New("Bot " + Token)
