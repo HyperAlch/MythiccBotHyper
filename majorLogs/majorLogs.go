@@ -32,8 +32,8 @@ func GuildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.
 		data = rolesUpdated(newRoles, removedRoles, guildMemberUpdate.User, session)
 	}
 
-	exists, index := g.CustomMembersState.Exists(guildMemberUpdate.User.ID)
-	if exists {
+	isCached, index := g.CustomMembersState.Exists(guildMemberUpdate.User.ID)
+	if isCached {
 		go g.CustomMembersState.Update(index, *guildMemberUpdate.Member)
 	} else {
 		go g.CustomMembersState.Append(*guildMemberUpdate.Member)
