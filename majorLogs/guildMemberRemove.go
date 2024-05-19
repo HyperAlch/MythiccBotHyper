@@ -6,6 +6,7 @@ import (
 	"MythiccBotHyper/utils"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -42,21 +43,18 @@ func GuildMemberRemove(session *discordgo.Session, guildMemberRemoveData *discor
 
 	userRoles := []string{"Unknown"}
 
-	if g.CustomMembersState.Length() > 0 {
-		for i, member := range g.CustomMembersState.Members() {
-			if member.User.ID == user.ID {
-				if len(member.Roles) > 0 {
-					userRoles = []string{}
-					for _, role := range member.Roles {
-						userRoles = append(userRoles, interactives.FromRoleId(role))
-					}
-				} else {
-					userRoles[0] = "No roles"
-				}
-				go g.CustomMembersState.Delete(i)
-				break
+	memberCached, index := g.CustomMembersState.Exists(user.ID)
+	if memberCached {
+		member := g.CustomMembersState.Member(index)
+		if len(member.Roles) > 0 {
+			userRoles = []string{}
+			for _, role := range member.Roles {
+				userRoles = append(userRoles, interactives.FromRoleId(role))
 			}
+		} else {
+			userRoles[0] = "No roles"
 		}
+		go g.CustomMembersState.Delete(index)
 	}
 
 	fields := []*discordgo.MessageEmbedField{
@@ -64,6 +62,11 @@ func GuildMemberRemove(session *discordgo.Session, guildMemberRemoveData *discor
 			Name:   "Account Age",
 			Value:  formattedDateDiff,
 			Inline: true,
+		},
+		{
+			Name:   "Roles",
+			Value:  strings.Join(userRoles, " "),
+			Inline: false,
 		},
 	}
 

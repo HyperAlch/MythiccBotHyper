@@ -24,8 +24,8 @@ func (m *MembersState) Append(member *discordgo.Member) {
 	m.mutex.Unlock()
 }
 
-func (m *MembersState) Members() []*discordgo.Member {
-	return m.members
+func (m *MembersState) Member(index int) discordgo.Member {
+	return *m.members[index]
 }
 
 func (m *MembersState) Length() int {
@@ -36,4 +36,17 @@ func (m *MembersState) Delete(index int) {
 	m.mutex.Lock()
 	m.members = slices.Delete(m.members, index, index+1)
 	m.mutex.Unlock()
+}
+
+func (m *MembersState) Exists(memberId string) (bool, int) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	for i, member := range m.members {
+		if member.User.ID == memberId {
+			return true, i
+		}
+	}
+
+	return false, -1
 }
