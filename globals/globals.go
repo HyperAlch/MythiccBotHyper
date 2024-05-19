@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -23,6 +24,7 @@ var (
 	NeedsToApplyChannel      string
 	NeedsToApplyGuideChannel string
 	CustomMembersState       *MembersState
+	SyncSeconds              int
 )
 
 func init() {
@@ -36,6 +38,7 @@ func init() {
 		"NEEDS_TO_APPLY_ROLE",
 		"NEEDS_TO_APPLY_CHANNEL",
 		"NEEDS_TO_APPLY_GUIDE_CHANNEL",
+		"SYNC_SECONDS",
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -55,6 +58,10 @@ func init() {
 	NeedsToApplyRole = envVars["NEEDS_TO_APPLY_ROLE"]
 	NeedsToApplyChannel = envVars["NEEDS_TO_APPLY_CHANNEL"]
 	NeedsToApplyGuideChannel = envVars["NEEDS_TO_APPLY_GUIDE_CHANNEL"]
+	SyncSeconds, err = strconv.Atoi(envVars["SYNC_SECONDS"])
+	if err != nil {
+		log.Panic(err)
+	}
 
 	// Create a new Discord session using the provided Bot token.
 	Bot, err = discordgo.New("Bot " + Token)

@@ -62,8 +62,8 @@ func startBot() {
 		}()
 
 		copySession := func() {
-			// TODO: Get sleep time from .env file
-			time.Sleep(15 * time.Second)
+			log.Printf("Sleeping for %v seconds before sync...", g.SyncSeconds)
+			time.Sleep(time.Duration(g.SyncSeconds) * time.Second)
 			guild, err := session.State.Guild(g.GuildID)
 			if err != nil {
 				log.Println(err)
