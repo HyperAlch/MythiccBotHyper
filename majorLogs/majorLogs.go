@@ -34,9 +34,9 @@ func GuildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.
 
 	exists, index := g.CustomMembersState.Exists(guildMemberUpdate.User.ID)
 	if exists {
-		g.CustomMembersState.Update(index, *guildMemberUpdate.Member)
+		go g.CustomMembersState.Update(index, *guildMemberUpdate.Member)
 	} else {
-		g.CustomMembersState.Append(*guildMemberUpdate.Member)
+		go g.CustomMembersState.Append(*guildMemberUpdate.Member)
 	}
 
 	_, err := session.ChannelMessageSendEmbed(
