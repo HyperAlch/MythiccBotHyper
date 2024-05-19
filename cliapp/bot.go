@@ -78,7 +78,7 @@ func startBot() {
 				if len(members) > 0 {
 					g.CustomMembersState.Clear()
 					for _, m := range members {
-						g.CustomMembersState.Append(&m)
+						g.CustomMembersState.Append(m)
 					}
 				}
 

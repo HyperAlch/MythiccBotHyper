@@ -14,28 +14,38 @@ type MembersState struct {
 
 func (m *MembersState) Clear() {
 	m.mutex.Lock()
+	defer m.mutex.Unlock()
 	m.members = []*discordgo.Member{}
-	m.mutex.Unlock()
 }
 
-func (m *MembersState) Append(member *discordgo.Member) {
+func (m *MembersState) Append(member discordgo.Member) {
 	m.mutex.Lock()
-	m.members = append(m.members, member)
-	m.mutex.Unlock()
+	defer m.mutex.Unlock()
+	m.members = append(m.members, &member)
 }
 
 func (m *MembersState) Member(index int) discordgo.Member {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
 	return *m.members[index]
 }
 
+func (m *MembersState) Update(index int, member discordgo.Member) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	m.members[index] = &member
+}
+
 func (m *MembersState) Length() int {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
 	return len(m.members)
 }
 
 func (m *MembersState) Delete(index int) {
 	m.mutex.Lock()
+	defer m.mutex.Unlock()
 	m.members = slices.Delete(m.members, index, index+1)
-	m.mutex.Unlock()
 }
 
 func (m *MembersState) Exists(memberId string) (bool, int) {
