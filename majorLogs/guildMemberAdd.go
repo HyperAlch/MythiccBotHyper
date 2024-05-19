@@ -12,7 +12,6 @@ import (
 )
 
 func GuildMemberAdd(session *discordgo.Session, guildMemberAddData *discordgo.GuildMemberAdd) {
-	// TODO: Update CustomMembersState
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Bot Recovered:", r)
@@ -48,6 +47,13 @@ func GuildMemberAdd(session *discordgo.Session, guildMemberAddData *discordgo.Gu
 			Value:  formattedDateDiff,
 			Inline: true,
 		},
+	}
+
+	isCached, index := g.CustomMembersState.Exists(guildMemberAddData.User.ID)
+	if isCached {
+		go g.CustomMembersState.Update(index, *guildMemberAddData.Member)
+	} else {
+		go g.CustomMembersState.Append(*guildMemberAddData.Member)
 	}
 
 	timeStamp := time.Now().Format(time.RFC3339)
