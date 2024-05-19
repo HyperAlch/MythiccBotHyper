@@ -12,7 +12,6 @@ import (
 
 // Triggered when a users Nickname or Roles change
 func GuildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.GuildMemberUpdate) {
-	// TODO: Update CustomMembersState
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Bot Recovered:", r)
@@ -31,6 +30,13 @@ func GuildMemberUpdate(session *discordgo.Session, guildMemberUpdate *discordgo.
 		data = nicknameUpdated(guildMemberUpdate.BeforeUpdate.Nick, guildMemberUpdate.Nick, guildMemberUpdate.User)
 	} else if len(removedRoles) != 0 || len(newRoles) != 0 {
 		data = rolesUpdated(newRoles, removedRoles, guildMemberUpdate.User, session)
+	}
+
+	exists, index := g.CustomMembersState.Exists(guildMemberUpdate.User.ID)
+	if exists {
+		g.CustomMembersState.Update(index, *guildMemberUpdate.Member)
+	} else {
+		g.CustomMembersState.Append(*guildMemberUpdate.Member)
 	}
 
 	_, err := session.ChannelMessageSendEmbed(
