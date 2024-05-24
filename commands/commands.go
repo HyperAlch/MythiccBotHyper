@@ -20,6 +20,7 @@ var (
 		&slashcommands.GamesDetails,
 		&slashcommands.PickGamesMenuDetails,
 		&applicationcommands.GuildApplyDetails,
+		&slashcommands.EsoFormDetails,
 	}
 
 	AdminCommandHandlers = datatype.InteractionMap{
@@ -28,17 +29,67 @@ var (
 		"admins":          slashcommands.Admins,
 		"games":           slashcommands.Games,
 		"pick_games_menu": slashcommands.PickGamesMenu,
+		"eso_form":        slashcommands.EsoForm,
 		// TODO: Make a "Triggered!" applicationcommand
 		// TODO: Make a "Release triggered!" applicationcommand
 	}
 
 	CommandHandlers = datatype.InteractionMap{
-		"Guild Apply":               applicationcommands.GuildApply,
-		"guild_apply_modal":         modalInteractions.GuildApplyModal,
-		"pick-games-add":            messageComponents.PickGamesAdd,
-		"pick-games-remove":         messageComponents.PickGamesRemove,
-		"pick-games-add-execute":    messageComponents.PickGamesAddExecute,
-		"pick-games-remove-execute": messageComponents.PickGamesRemoveExecute,
+		"Guild Apply":                   applicationcommands.GuildApply,
+		"guild_apply_modal":             modalInteractions.GuildApplyModal,
+		"pick-games-add":                messageComponents.PickGamesAdd,
+		"pick-games-remove":             messageComponents.PickGamesRemove,
+		"pick-games-add-execute":        messageComponents.PickGamesAddExecute,
+		"pick-games-remove-execute":     messageComponents.PickGamesRemoveExecute,
+		"eso-form-execute":              slashcommands.EsoForm_check_pc_or_console,
+		"eso-form-picked-console":       slashcommands.EsoForm_console_are_you_sure,
+		"eso-form-picked-pc":            slashcommands.EsoForm_choose_party_roles,
+		"eso-party-role-selected":       slashcommands.EsoForm_choose_content,
+		"eso-content-selected":          slashcommands.EsoForm_submit_name_buttons,
+		"eso-form-modal-character-name": slashcommands.EsoForm_submit_character_name,
+		"eso-form-modal-account-name":   slashcommands.EsoForm_submit_account_name,
+		"eso_account_name_modal": func(s *discordgo.Session, interaction *discordgo.InteractionCreate) {
+
+			err := globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Account name submitted",
+					Flags:   discordgo.MessageFlagsEphemeral,
+				},
+			})
+
+			if err != nil {
+				log.Println("ERROR:", err)
+			}
+		},
+		"eso_character_name_modal": func(s *discordgo.Session, interaction *discordgo.InteractionCreate) {
+
+			err := globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Character name submitted",
+					Flags:   discordgo.MessageFlagsEphemeral,
+				},
+			})
+
+			if err != nil {
+				log.Println("ERROR:", err)
+			}
+		},
+		"eso-form-console-retard": func(s *discordgo.Session, interaction *discordgo.InteractionCreate) {
+
+			err := globals.Bot.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Get kicked console peasant!!!",
+					Flags:   discordgo.MessageFlagsEphemeral,
+				},
+			})
+
+			if err != nil {
+				log.Println("ERROR:", err)
+			}
+		},
 	}
 )
 
